@@ -41,11 +41,11 @@ struct PolymerParameter{T, R<:Real} <: AbstractParameter
     ascii_label::String
     plot_label::LaTeXString
     value_type::Type{R}
-    allowed_min::R
-    allowed_max::R
+    allowed_min::Union{R, typeof(Inf)}
+    allowed_max::Union{R, typeof(Inf)}
     allowed_values::AbstractVector{R}
     disallowed_values::AbstractVector{R}
-    function PolymerParameter{T}(desc, plot_label, value_type::Type{R}; allowed_min=infinity(R; negative=true), allowed_max=infinity(R), allowed_values=R[], disallowed_values=R[]) where {T, R<:Real}
+    function PolymerParameter{T}(desc, plot_label, value_type::Type{R}; allowed_min=-Inf, allowed_max=Inf, allowed_values=R[], disallowed_values=R[]) where {T, R<:Real}
         varname = String(T)
         ascii_label = ""
         for c in varname
@@ -63,13 +63,16 @@ const χParam = PolymerParameter{:χ}(
     L"\chi", Float64)
 const NParam = PolymerParameter{:N}(
     "Chain length in number of monomers or Kuhn segments.",
-    L"N", UInt)
+    L"N", Int; allowed_min=zero(Int))
 const χNParam = PolymerParameter{:χN}(
     "Flory-Huggins Interaction Parameter times N.",
     L"\chi N", Float64)
 const fParam = PolymerParameter{:f}(
     "Volume fraction of a block in a block copolymer.",
     L"f", Float64; allowed_min=0, allowed_max=1)
+const ϕParam = PolymerParameter{:f}(
+    "volume fraction of a type of chain in a polymer system.",
+    L"\phi", Float64; allowed_min=0, allowed_max=1)
 const RgParam = PolymerParameter{:Rg}(
     "Radius of gyration of a polymer chain.",
     L"R_g", Float64; allowed_min=0)

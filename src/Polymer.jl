@@ -5,7 +5,7 @@ using REPL: symbol_latex
 using LaTeXStrings
 
 include("utils.jl")
-export infinity, isinfinity, unicodesymbol2string
+# export infinity, isinfinity, unicodesymbol2string
 
 include("parameters.jl")
 export PolymerSystemType, NeatPolymer, PolymerBlend, PolymerSolution
@@ -15,7 +15,7 @@ export SpaceDimension
 export ConfinementType, BulkConfinement, BoxConfinement, SlabConfinement, DiskConfinement, SphereConfinement, CylinderConfinement
 
 export AbstractParameter, PolymerParameter
-export χParam, NParam, χNParam, fParam, RgParam, CParam, bParam, αParam, τParam
+export χParam, NParam, χNParam, fParam, ϕParam, RgParam, CParam, bParam, αParam, τParam
 export description, as_variable_name, as_ascii_label, as_plot_label
 
 export ChargedType, Neutral, SmearedCharge, DiscreteCharge
