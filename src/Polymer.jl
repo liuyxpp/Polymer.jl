@@ -1,13 +1,23 @@
 module Polymer
 
 using ArgCheck
+using REPL: symbol_latex
+using LaTeXStrings
 
+include("utils.jl")
+export infinity, isinfinity, unicodesymbol2string
+
+include("parameters.jl")
 export PolymerSystemType, NeatPolymer, PolymerBlend, PolymerSolution
 export PolymerType, Homopolymer, Copolymer, BlockCopolymer, RandomCopolymer
 export PolymerArchitecture, LinearArchitecture, BranchedArchitecture, StarArchitecture, CombArchitecture, RingArchitecture
 export SpaceDimension
 export ConfinementType, BulkConfinement, BoxConfinement, SlabConfinement, DiskConfinement, SphereConfinement, CylinderConfinement
-export PolymerParameter, χParam, χNParam, fParam, ϕParam, CParam, RgParam, NParam, bParam, αParam, τParam
+
+export AbstractParameter, PolymerParameter
+export χParam, NParam, χNParam, fParam, RgParam, CParam, bParam, αParam, τParam
+export description, as_variable_name, as_ascii_label, as_plot_label
+
 export ChargedType, Neutral, SmearedCharge, DiscreteCharge
 export BlockEnd, FreeEnd, BranchPoint, PolymerBlock
 export AbstractSpecie, KuhnSegment, SmallMolecule
@@ -34,18 +44,6 @@ struct CombArchitecture <: BranchedArchitecture end
 struct RingArchitecture <: PolymerArchitecture end
 islinearchain(::LinearArchitecture) = true
 islinearchain(::PolymerArchitecture) = false
-
-abstract type PolymerParameter end
-struct χParam <: PolymerParameter end
-struct χNParam <: PolymerParameter end
-struct fParam <: PolymerParameter end
-struct ϕParam <: PolymerParameter end
-struct CParam <: PolymerParameter end
-struct RgParam <: PolymerParameter end
-struct NParam <: PolymerParameter end
-struct bParam <: PolymerParameter end
-struct αParam <: PolymerParameter end
-struct τParam <: PolymerParameter end
 
 abstract type SpaceDimension end
 struct D1 <: SpaceDimension end
