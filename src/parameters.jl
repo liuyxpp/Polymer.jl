@@ -1,7 +1,12 @@
-abstract type AbstractParameter end
+"""
+## Parameteric types
+* `T`: should be a symbol to identify the parameter.
+* `R`: the value type of the parameter.
+"""
+abstract type AbstractParameter{T,R} end
 
 """
-    PolymerParameter{T} <: AbstractParameter
+    PolymerParameter{T, R} <: AbstractParameter
 
 Type represents phyiscal parameters of a polymer system. Each type with a specific T (normally a symbol) defines a parameter. E.g.
 
@@ -35,7 +40,7 @@ User can define their own parameter symbols as long as they also define followin
 * `description`
 * `plot_label`
 """
-struct PolymerParameter{T, R<:Real} <: AbstractParameter
+struct PolymerParameter{T, R<:Real} <: AbstractParameter{T,R}
     description::String
     variable_name::String
     ascii_label::String

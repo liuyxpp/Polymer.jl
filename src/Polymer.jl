@@ -5,7 +5,7 @@ using REPL: symbol_latex
 using LaTeXStrings
 
 include("utils.jl")
-# export infinity, isinfinity, unicodesymbol2string
+export unicodesymbol2string
 
 include("parameters.jl")
 export PolymerSystemType, NeatPolymer, PolymerBlend, PolymerSolution

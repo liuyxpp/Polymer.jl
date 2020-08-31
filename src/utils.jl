@@ -1,15 +1,3 @@
-# function infinity(::T; negative=false) where T<:Real
-#     return negative ? typemin(T) : typemax(T)
-# end
-
-# function infinity(::Type{T}; negative=false) where T<:Real
-#     return negative ? typemin(T) : typemax(T)
-# end
-
-# function isinfinity(n::T) where T<:Real
-#     return n == infinity(n) || n == infinity(n; negative=true)
-# end
-
 """
     unicodesymbol2string(us::Char)
 
