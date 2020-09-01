@@ -75,7 +75,7 @@ const χNParam = PolymerParameter{:χN}(
 const fParam = PolymerParameter{:f}(
     "Volume fraction of a block in a block copolymer.",
     L"f", Float64; allowed_min=0, allowed_max=1)
-const ϕParam = PolymerParameter{:f}(
+const ϕParam = PolymerParameter{:ϕ}(
     "volume fraction of a type of chain in a polymer system.",
     L"\phi", Float64; allowed_min=0, allowed_max=1)
 const RgParam = PolymerParameter{:Rg}(
