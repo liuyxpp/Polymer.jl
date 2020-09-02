@@ -27,7 +27,7 @@ solvent(; label=:S, α=0.01, ϕ=0.0) = SmallMoleculeComponent(label; α=α, ϕ=�
 AB_system() = PolymerSystem([diblock_chain()])
 
 "AB diblock copolymers / A homopolymers blend."
-AB_A_system() = PolymerSystem([diblock_chain(; ϕ=0.5), homopolymer_chain(; ϕ=0.5)])
+AB_A_system() = PolymerSystem([diblock_chain(; ϕ=0.5), homopolymer_chain(; label=:hA, ϕ=0.5)])
 
 "AB diblock copolymers + solvent solution."
 AB_S_system() = PolymerSystem([diblock_chain(; ϕ=0.5), solvent(; ϕ=0.5)])
