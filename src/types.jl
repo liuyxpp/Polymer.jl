@@ -127,12 +127,11 @@ Note: For Edwards Model A (homopolymer + implicit solvent), one has to add a dum
 struct PolymerSystem{T<:AbstractComponent}
     components::Vector{T}
     confinement::ConfinementType
-    dim::SpaceDimension
     C::Real # = \rho_0 R_g^3 / N, dimensionless chain density
 
-    function PolymerSystem(components::Vector{T}; conf=BulkConfinement(), dim=D1(), C=1.0) where {T<:AbstractComponent}
+    function PolymerSystem(components::Vector{T}; conf=BulkConfinement(), C=1.0) where {T<:AbstractComponent}
         @argcheck _isasystem(components)
-        new{T}(components, conf, dim, C)
+        new{T}(components, conf, C)
     end
 end
 

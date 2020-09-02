@@ -25,6 +25,6 @@ export AbstractComponent, PolymerComponent, SmallMoleculeComponent, ParticleComp
 export islinearchain, isconfined, ischarged, multicomponent, ncomponents, species, nspecies, systemtype
 
 include("systems.jl")
-export homopolymer_chain, diblock_chain
+export homopolymer_chain, diblock_chain, solvent, AB_system, AB_A_system, AB_S_system
 
 end # module

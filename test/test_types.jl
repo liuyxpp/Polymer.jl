@@ -70,7 +70,6 @@ end
     chain = PolymerComponent(:AB, [A,B])
     solvent = SmallMoleculeComponent(:S)
     ABS = PolymerSystem([chain, solvent])
-    @test ABS.dim == D1()
     @test isconfined(ABS.confinement) == false
     @test ABS.C == 1.0
 
