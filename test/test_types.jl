@@ -69,7 +69,11 @@ end
     B = PolymerBlock(:B, sB, 0.6, e1B, e2B)
     chain = PolymerComponent(:AB, [A,B])
     solvent = SmallMoleculeComponent(:S)
-    ABS = PolymerSystem([chain, solvent])
+    χN_map = Dict(
+        Set([:A,:B])=>20.0,
+        Set([:A,:S])=>80.0,
+        Set([:B,:S])=>120.0)
+    ABS = PolymerSystem([chain, solvent]; χN_map=χN_map)
     @test isconfined(ABS.confinement) == false
     @test ABS.C == 1.0
 
@@ -96,7 +100,8 @@ end
     chainAB = PolymerComponent(:AB, [A,B]; ϕ=0.1)
     hA = PolymerBlock(:hA, sA, 1.0, FreeEnd(:hA1), FreeEnd(:hA2))
     chainA = PolymerComponent(:hA, [hA]; α=0.5, ϕ=0.9)
-    AB_A = PolymerSystem([chainAB, chainA])
+    χN_map = Dict(Set([:A,:B])=>20.0)
+    AB_A = PolymerSystem([chainAB, chainA]; χN_map=χN_map)
 
     @test multicomponent(AB_A) == true
     @test ncomponents(AB_A) == 2

@@ -122,16 +122,20 @@ struct ParticleComponent <: AbstractComponent end
 struct GiantMoleculeComponent <: AbstractComponent end
 
 """
+The key of `χN_map` should be a two-element `Set`. Each element is the unique symbol for a specie. For example, the `χN_map` of an AB diblock copolymer is a `Dict` with one entry `Set([:A, :B]) => χN`.
+
 Note: For Edwards Model A (homopolymer + implicit solvent), one has to add a dummy solvent component in the `components` array to make the function `multicomponent` return correct result.
 """
 struct PolymerSystem{T<:AbstractComponent}
     components::Vector{T}
     confinement::ConfinementType
+    χN_map::Union{Dict{Set{Symbol},AbstractFloat},Nothing}
     C::Real # = \rho_0 R_g^3 / N, dimensionless chain density
 
-    function PolymerSystem(components::Vector{T}; conf=BulkConfinement(), C=1.0) where {T<:AbstractComponent}
+    function PolymerSystem(components::Vector{T}; χN_map=nothing, conf=BulkConfinement(), C=1.0) where {T<:AbstractComponent}
         @argcheck _isasystem(components)
-        new{T}(components, conf, C)
+        @argcheck _isasystem(components, χN_map)
+        new{T}(components, conf, χN_map, C)
     end
 end
 
@@ -139,7 +143,7 @@ end
 Check if the volume fraction of all compnents sums to 1.0.
 """
 function _isasystem(components)
-    mapreduce(x->x.ϕ, +, components) == 1.0 ? true : false
+    return mapreduce(x->x.ϕ, +, components) == 1.0 ? true : false
 end
 
 multicomponent(s::PolymerSystem) = length(s.components) == 1 ? false : true
@@ -149,14 +153,40 @@ species(c::PolymerComponent) = [b.segment.label for b in c.blocks] |> unique
 nspecies(c::PolymerComponent) = species(c) |> length
 species(c::SmallMoleculeComponent) = [c.specie.label]
 nspecies(c::SmallMoleculeComponent) = 1
-function species(s::PolymerSystem)
+function species(components)
     sp = []
-    for c in s.components
+    for c in components
         union!(sp, species(c))
     end
     return sp
 end
+
+species(s::PolymerSystem) = species(s.components)
 nspecies(s::PolymerSystem) = species(s) |> length
+
+function _isasystem(components, χN_map)
+    sp = species(components)
+    n = length(sp)
+    # For one-specie system, always true.
+    if n == 1
+        return true
+    end
+    # for n > 1, `χN_map` should not be nothing
+    if isnothing(χN_map)
+        return false
+    end
+    # The number of key-val pairs should be equal to (n-1)n/2 with n being the number of species.
+    if length(χN_map) != (n-1)*n÷2
+        return false
+    end
+
+    # the species in all compnents should be consistent with the species in the χN_map
+    sp2 = []
+    for key in keys(χN_map)
+        union!(sp2, key)
+    end
+    return Set(sp) == Set(sp2)
+end
 
 function systemtype(s::PolymerSystem)
     if !multicomponent(s)
