@@ -18,11 +18,13 @@ export PolymerType, Homopolymer, Copolymer, BlockCopolymer, RandomCopolymer
 export PolymerArchitecture, LinearArchitecture, BranchedArchitecture, StarArchitecture, CombArchitecture, RingArchitecture
 export SpaceDimension, D1, D2, D3
 export ConfinementType, BulkConfinement, BoxConfinement, SlabConfinement, DiskConfinement, SphereConfinement, CylinderConfinement
-
 export ChargedType, Neutral, SmearedCharge, DiscreteCharge
 export BlockEnd, FreeEnd, BranchPoint, PolymerBlock
 export AbstractSpecie, KuhnSegment, SmallMolecule
 export AbstractComponent, PolymerComponent, SmallMoleculeComponent, ParticleComponent, GiantMoleculeComponent, PolymerSystem
 export islinearchain, isconfined, ischarged, multicomponent, ncomponents, species, nspecies, systemtype
+
+include("systems.jl")
+export homopolymer_chain, diblock_chain
 
 end # module

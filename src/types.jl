@@ -37,6 +37,12 @@ struct StarArchitecture <: BranchedArchitecture end
 struct CombArchitecture <: BranchedArchitecture end
 # Polymer that has ring(s) in it.
 struct RingArchitecture <: PolymerArchitecture end
+
+"""
+    islinearchain(<:PolymerArchitecture)
+
+Check if the chain is linear. Currently we use explicit traits to check. It is possible to check the architecture by examining PolymerComponent instance. But it is not implemented yet.
+"""
 islinearchain(::LinearArchitecture) = true
 islinearchain(::PolymerArchitecture) = false
 
@@ -63,9 +69,11 @@ struct SmallMolecule <: AbstractSpecie
 end
 
 abstract type BlockEnd end
+
 struct FreeEnd <: BlockEnd
     label::Symbol
 end
+
 struct BranchPoint <: BlockEnd
     label::Symbol
 end
