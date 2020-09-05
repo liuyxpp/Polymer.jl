@@ -21,14 +21,6 @@ struct NeatPolymer <: PolymerSystemType end
 struct PolymerBlend <: PolymerSystemType end
 struct PolymerSolution <: PolymerSystemType end
 
-# traits for the type of polymer
-abstract type PolymerType end
-struct Homopolymer <: PolymerType end
-abstract type Copolymer <: PolymerType end
-struct BlockCopolymer <: Copolymer end
-struct RandomCopolymer <: Copolymer end
-struct AlternatingCopolymer <: Copolymer end
-
 # traits for the type of chain architecture
 abstract type PolymerArchitecture end
 struct LinearArchitecture <: PolymerArchitecture end
@@ -59,14 +51,8 @@ struct KuhnSegment <: AbstractSpecie
     label::Symbol
     b::Real # length
     M::Real # molecular weight in g/mol
-    KuhnSegment(label; b=1.0, M=1.0) = new(label, b, M)
 end
-struct SmallMolecule <: AbstractSpecie
-    label::Symbol
-    b::Real # length
-    M::Real # molecular weight in g/mol
-    SmallMolecule(label; b=1.0, M=1.0) = new(label, b, M)
-end
+KuhnSegment(label; b=1.0, M=1.0) = KuhnSegment(label, b, M)
 
 abstract type BlockEnd end
 
@@ -77,6 +63,8 @@ end
 struct BranchPoint <: BlockEnd
     label::Symbol
 end
+isfreeblockend(::BlockEnd) = false
+isfreeblockend(::FreeEnd) = true
 
 abstract type AbstractBlock end
 struct PolymerBlock <: AbstractBlock
@@ -91,68 +79,90 @@ end
 Check if the length of all blocks in a chain sum to 1.0.
 """
 function _isachain(blocks)
-    mapreduce(x->x.f, +, blocks) == 1.0 ? true : false
+    mapreduce(x->x.f, +, blocks) ≈ 1.0 ? true : false
 end
 
-abstract type AbstractComponent end
-struct PolymerComponent{T<:AbstractBlock} <: AbstractComponent
+abstract type AbstractMolecule end
+
+struct SmallMolecule <: AbstractMolecule
+    label::Symbol
+    b::Real # length
+    M::Real # molecular weight in g/mol
+end
+SmallMolecule(label; b=1.0, M=1.0) = SmallMolecule(label, b, M)
+
+abstract type AbstractPolymer <: AbstractMolecule end
+
+struct BlockCopolymer{T<:AbstractBlock} <: AbstractPolymer
     label::Symbol
     blocks::Vector{T}
     architecture::PolymerArchitecture
     charged::ChargedType
+
+    function BlockCopolymer(label, blocks::Vector{T}, arch, charged) where {T<:PolymerBlock}
+        @argcheck _isachain(blocks)
+        new{T}(label, blocks, arch, charged)
+    end
+end
+BlockCopolymer(label, blocks::Vector{T}; arch=LinearArchitecture(), charged=Neutral()) where {T<:PolymerBlock} = BlockCopolymer(label, blocks, arch, charged)
+
+struct RandomCopolymer <: AbstractPolymer end
+struct AlternatingCopolymer <: AbstractPolymer end
+struct Particle <: AbstractMolecule end
+struct GiantMolecule <: AbstractMolecule end
+
+abstract type AbstractComponent end
+
+struct Component{T<:AbstractMolecule} <: AbstractComponent
+    molecule::T
     α::Real # N / N_ref, N_ref is the total number of segments in a reference polymer chain
     ϕ::Real # = n*N/V, number density of this component in the system.
 
-    function PolymerComponent(label, blocks::Vector{T}; arch=LinearArchitecture(), charged=Neutral(), α=1.0, ϕ=1.0) where {T<:PolymerBlock}
-        @argcheck _isachain(blocks)
-        new{T}(label, blocks, arch, charged, α, ϕ)
+    function Component(molecule::T, α, ϕ) where {T<:AbstractMolecule}
+        new{T}(molecule, α, ϕ)
     end
 end
-struct SmallMoleculeComponent <: AbstractComponent
-    label::Symbol
-    specie::SmallMolecule
-    α::Real # 1 / N_ref
-    ϕ::Real # n/V
+Component(molecule::T; α=1.0, ϕ=1.0) where {T<:AbstractMolecule} = Component(molecule, α, ϕ)
 
-    function SmallMoleculeComponent(label; specie=SmallMolecule(label), α=0.01, ϕ=0.0)
-        new(label, specie, α, ϕ)
-    end
-end
-struct ParticleComponent <: AbstractComponent end
-struct GiantMoleculeComponent <: AbstractComponent end
+abstract type AbstractSystem end
 
 """
 The key of `χN_map` should be a two-element `Set`. Each element is the unique symbol for a specie. For example, the `χN_map` of an AB diblock copolymer is a `Dict` with one entry `Set([:A, :B]) => χN`.
 
 Note: For Edwards Model A (homopolymer + implicit solvent), one has to add a dummy solvent component in the `components` array to make the function `multicomponent` return correct result.
 """
-struct PolymerSystem{T<:AbstractComponent}
-    components::Vector{T}
+struct PolymerSystem <: AbstractSystem
+    components::Vector{AbstractComponent}
     confinement::ConfinementType
     χN_map::Union{Dict{Set{Symbol},AbstractFloat},Nothing}
     C::Real # = \rho_0 R_g^3 / N, dimensionless chain density
 
-    function PolymerSystem(components::Vector{T}; χN_map=nothing, conf=BulkConfinement(), C=1.0) where {T<:AbstractComponent}
+    function PolymerSystem(components::Vector{T}, conf, χN_map, C) where {T<:AbstractComponent}
         @argcheck _isasystem(components)
         @argcheck _isasystem(components, χN_map)
-        new{T}(components, conf, χN_map, C)
+        new(components, conf, χN_map, C)
     end
 end
+PolymerSystem(components::Vector{T}; χN_map=nothing, conf=BulkConfinement(), C=1.0) where {T<:AbstractComponent} = PolymerSystem(components, conf, χN_map, C)
 
 """
 Check if the volume fraction of all compnents sums to 1.0.
 """
 function _isasystem(components)
-    return mapreduce(x->x.ϕ, +, components) == 1.0 ? true : false
+    return mapreduce(x->x.ϕ, +, components) ≈ 1.0 ? true : false
 end
 
 multicomponent(s::PolymerSystem) = length(s.components) == 1 ? false : true
 ncomponents(s::PolymerSystem) = length(s.components)
 
-species(c::PolymerComponent) = [b.segment.label for b in c.blocks] |> unique
-nspecies(c::PolymerComponent) = species(c) |> length
-species(c::SmallMoleculeComponent) = [c.specie.label]
-nspecies(c::SmallMoleculeComponent) = 1
+specie(s::AbstractSpecie) = s.label
+specie(m::SmallMolecule) = m.label
+specie(b::PolymerBlock) = specie(b.segment)
+
+species(c::BlockCopolymer) = [specie(b) for b in c.blocks] |> unique
+nspecies(c::BlockCopolymer) = species(c) |> length
+species(m::SmallMolecule) = [specie(m)]
+nspecies(m::SmallMolecule) = 1
 function species(components)
     sp = []
     for c in components
@@ -161,6 +171,8 @@ function species(components)
     return sp
 end
 
+species(c::Component) = species(c.molecule)
+nspecies(c::Component) = species(c) |> length
 species(s::PolymerSystem) = species(s.components)
 nspecies(s::PolymerSystem) = species(s) |> length
 
@@ -193,7 +205,7 @@ function systemtype(s::PolymerSystem)
         return NeatPolymer()
     end
     for c in s.components
-        if c isa SmallMoleculeComponent
+        if c.molecule isa SmallMolecule
             return PolymerSolution()
         end
     end

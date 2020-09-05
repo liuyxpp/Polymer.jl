@@ -14,17 +14,19 @@ export description, as_variable_name, as_ascii_label, as_plot_label
 
 include("types.jl")
 export PolymerSystemType, NeatPolymer, PolymerBlend, PolymerSolution
-export PolymerType, Homopolymer, Copolymer, BlockCopolymer, RandomCopolymer
 export PolymerArchitecture, LinearArchitecture, BranchedArchitecture, StarArchitecture, CombArchitecture, RingArchitecture
 export SpaceDimension, D1, D2, D3
 export ConfinementType, BulkConfinement, BoxConfinement, SlabConfinement, DiskConfinement, SphereConfinement, CylinderConfinement
 export ChargedType, Neutral, SmearedCharge, DiscreteCharge
 export BlockEnd, FreeEnd, BranchPoint, PolymerBlock
-export AbstractSpecie, KuhnSegment, SmallMolecule
-export AbstractComponent, PolymerComponent, SmallMoleculeComponent, ParticleComponent, GiantMoleculeComponent, PolymerSystem
-export islinearchain, isconfined, ischarged, multicomponent, ncomponents, species, nspecies, systemtype
+export AbstractSpecie, KuhnSegment
+export AbstractMolecule, SmallMolecule, AbstractPolymer, BlockCopolymer, RandomCopolymer, AlternatingCopolymer, Particle, GiantMolecule
+export  AbstractComponent, Component, AbstractSystem, PolymerSystem
+export islinearchain, isconfined, ischarged, isfreeblockend, multicomponent, ncomponents, specie, species, nspecies, systemtype
 
 include("systems.jl")
 export homopolymer_chain, diblock_chain, solvent, AB_system, AB_A_system, AB_S_system
+
+# include("graph.jl")
 
 end # module

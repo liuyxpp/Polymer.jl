@@ -14,3 +14,10 @@ function unicodesymbol2string(us::Char)
     us = string(us)
     return isascii(us) ? us : isempty(symbol_latex(us)) ? us : symbol_latex(us)[2:end]
 end
+
+"""
+    reverse_dict(d::Dict)
+
+Return a Dict instance with each `key => val` pair in `d` reversed as `val => key` pair. Same values in `d` will be overwirten by the last occurd pair.
+"""
+reverse_dict(d::Dict) = Dict(v => k for (k, v) in d)
