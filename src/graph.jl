@@ -199,3 +199,36 @@ Save `BlockCopolymer` or `BlockCopolymerGraph` object into a file. The format ca
 save_graph(f::TikzPictures.SaveType, g::BlockCopolymerGraph; colors=[], bends=[]) = TikzPictures.save(f, plot_graph(g; colors=colors, bends=bends))
 
 save_graph(f::TikzPictures.SaveType, g::BlockCopolymer; colors=[], bends=[]) = save_graph(f, BlockCopolymerGraph(g); colors=colors, bends=bends)
+
+"""
+    chaintype(g::BlockCopolymer)
+    chaintype(g::BlockCopolymerGraph)
+
+Return the trait of `PolymerArchitecture`.
+
+We know our chain is always a connected graph. Therefore, it is easy to check whether it has cycles in it. For acyclic connected graph, it is merely a tree. And a tree has exactly (n - 1) edges where n is the number of nodes (vertices).
+"""
+function chaintype(g::BlockCopolymerGraph)
+    # Chain has cycle(s)/ring(s) if and only if its number of edges is different than n - 1 where n is the number of nodes in the graph.
+    if ne(g.graph) != nv(g.graph) - 1
+        return RingArchitecture()
+    end
+    ds = degree(g.graph)
+    # Linear chain cannot have branch point or can have branch point(s) with degree less than or equal to 2.
+    if maximum(ds) <= 2
+        return LinearArchitecture()
+    end
+    # Comb chain should only have branch points of degree 3 in the backbone.
+    if sum(ds .== 3) + sum(ds .== 1) == length(ds) && sum(ds .== 3) > 1
+        return CombArchitecture()
+    end
+    # Star chain should have a unique branch point with maximum degree (n>2).
+    # Other branch points (if any) should have maximum degree less than n.
+    if sum(ds .== maximum(ds)) > 1
+        return GeneralBranchedArchitecture()
+    else
+        return StarArchitecture()
+    end
+end
+
+chaintype(bcp::BlockCopolymer) = chaintype(BlockCopolymerGraph(bcp))

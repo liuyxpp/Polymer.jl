@@ -19,4 +19,6 @@ end
     @test length(node_styles(g)) == nv(g.graph)
     @test length(edge_labels(g)) == ne(g.graph)
     @test length(edge_styles(g)) == ne(g.graph)
+
+    @test chaintype(chainAB) == LinearArchitecture()
 end

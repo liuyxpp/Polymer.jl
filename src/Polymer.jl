@@ -14,7 +14,7 @@ export description, as_variable_name, as_ascii_label, as_plot_label
 
 include("types.jl")
 export PolymerSystemType, NeatPolymer, PolymerBlend, PolymerSolution
-export PolymerArchitecture, LinearArchitecture, BranchedArchitecture, StarArchitecture, CombArchitecture, RingArchitecture
+export PolymerArchitecture, LinearArchitecture, BranchedArchitecture, StarArchitecture, CombArchitecture, GeneralBranchedArchitecture, RingArchitecture
 export SpaceDimension, D1, D2, D3
 export ConfinementType, BulkConfinement, BoxConfinement, SlabConfinement, DiskConfinement, SphereConfinement, CylinderConfinement
 export ChargedType, Neutral, SmearedCharge, DiscreteCharge
@@ -29,6 +29,6 @@ export homopolymer_chain, diblock_chain, solvent, AB_system, AB_A_system, AB_S_s
 
 include("graph.jl")
 export BlockCopolymerGraph, SPECIECOLORS
-export build_graph, node_styles, edge_labels, edge_styles, plot_graph, save_graph
+export build_graph, node_styles, edge_labels, edge_styles, plot_graph, save_graph, chaintype
 
 end # module

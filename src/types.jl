@@ -27,6 +27,7 @@ struct LinearArchitecture <: PolymerArchitecture end
 abstract type BranchedArchitecture <: PolymerArchitecture end
 struct StarArchitecture <: BranchedArchitecture end
 struct CombArchitecture <: BranchedArchitecture end
+struct GeneralBranchedArchitecture <: BranchedArchitecture end
 # Polymer that has ring(s) in it.
 struct RingArchitecture <: PolymerArchitecture end
 
@@ -96,15 +97,12 @@ abstract type AbstractPolymer <: AbstractMolecule end
 struct BlockCopolymer{T<:AbstractBlock} <: AbstractPolymer
     label::Symbol
     blocks::Vector{T}
-    architecture::PolymerArchitecture
-    charged::ChargedType
 
-    function BlockCopolymer(label, blocks::Vector{T}, arch, charged) where {T<:PolymerBlock}
+    function BlockCopolymer(label, blocks::Vector{T}) where {T<:PolymerBlock}
         @argcheck _isachain(blocks)
-        new{T}(label, blocks, arch, charged)
+        new{T}(label, blocks)
     end
 end
-BlockCopolymer(label, blocks::Vector{T}; arch=LinearArchitecture(), charged=Neutral()) where {T<:PolymerBlock} = BlockCopolymer(label, blocks, arch, charged)
 
 struct RandomCopolymer <: AbstractPolymer end
 struct AlternatingCopolymer <: AbstractPolymer end

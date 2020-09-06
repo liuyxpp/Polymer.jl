@@ -1,11 +1,9 @@
 @testset "systems.jl: Components" begin
     chainA = homopolymer_chain()
-    @test islinearchain(chainA.architecture) == true
-    @test ischarged(chainA.charged) == false
+    @test length(chainA.blocks) == 1
 
     chainAB = diblock_chain()
-    @test islinearchain(chainAB.architecture) == true
-    @test ischarged(chainAB.charged) == false
+    @test length(chainAB.blocks) == 2
     @test chainAB.blocks[1].E2 == chainAB.blocks[2].E2
     @test chainAB.blocks[1].E1 != chainAB.blocks[2].E1
 

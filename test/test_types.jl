@@ -44,8 +44,6 @@ end
     A = PolymerBlock(:A, sA, 0.4, e1A, e2A)
     B = PolymerBlock(:B, sB, 0.6, e1B, e2B)
     c = BlockCopolymer(:AB, [A,B])
-    @test islinearchain(c.architecture) == true
-    @test ischarged(c.charged) == false
     pc = Component(c)
     @test pc.α == 1.0
     @test pc.ϕ == 1.0
