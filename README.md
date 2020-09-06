@@ -23,20 +23,26 @@ julia> A = PolymerBlock(:A, sA, 0.5, eA, eAB)
 julia> B = PolymerBlock(:B, sB, 0.5, eB, eAB)
 
 # Create a AB diblock copolymer chain
-julia> chainAB = PolymerComponent(:AB, [A,B]; ϕ=0.5)
+julia> chainAB = BlockCopolymer(:AB, [A,B])
 
 # Create a homopolymer chain
-julia> hA = PolymerBlock(:hA, sA, 1.0, FreeEnd(:hA1), FreeEnd(:hA2))
-julia> chainA = PolymerComponent(:hA, [hA]; ϕ=0.5)
+julia> hA = PolymerBlock(:hA, sA, 1.0, FreeEnd(), FreeEnd())
+julia> chainA = BlockCopolymer(:hA, [hA])
+
+# Create components
+julia> polymerAB = Component(chainAB; ϕ=0.5)
+julia> polymerA = Component(chainA; ϕ=0.5)
 
 # Create AB/A polymer blend system.
-julia> AB_A = PolymerSystem([chainAB, chainA])
+julia> AB_A = PolymerSystem([polymerAB, polymerA]; χN_map=Dict(Set([:A, :B])=>20.0))
 ```
 
-Convenient functions are also provided to create common polymer chains and systems. For example, above AB/A polymer blend system can be simply created by a single line of code.
+Convenient functions are also provided to create common polymer chains and systems. For example, above AB chain, A chain, AB/A polymer blend system can be simply created by a single line of code.
 
 ```julia
-julia> AB_A_system()
+julia> diblock_chain() # AB chain
+julia> homopolymer_chain() # A chain
+julia> AB_A_system() # AB/A polymer blend
 ```
 
 At present, there is no documentation. Consult the testing codes reside in `test` folder to learn more.
