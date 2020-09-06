@@ -5,7 +5,7 @@ using REPL: symbol_latex
 using LaTeXStrings
 
 include("utils.jl")
-export unicodesymbol2string
+export unicodesymbol2string, reverse_dict
 
 include("parameters.jl")
 export AbstractParameter, PolymerParameter
@@ -27,6 +27,8 @@ export islinearchain, isconfined, ischarged, isfreeblockend, multicomponent, nco
 include("systems.jl")
 export homopolymer_chain, diblock_chain, solvent, AB_system, AB_A_system, AB_S_system
 
-# include("graph.jl")
+include("graph.jl")
+export BlockCopolymerGraph, SPECIECOLORS
+export build_graph, node_styles, edge_labels, edge_styles, plot_graph, save_graph
 
 end # module

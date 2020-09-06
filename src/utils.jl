@@ -21,3 +21,20 @@ end
 Return a Dict instance with each `key => val` pair in `d` reversed as `val => key` pair. Same values in `d` will be overwirten by the last occurd pair.
 """
 reverse_dict(d::Dict) = Dict(v => k for (k, v) in d)
+
+"""
+    _sort_tuple2(t)
+
+Sort two-element Tuple to increase order. Example
+
+```julia-REPL
+julia> _sort_tuple2((2, 1))
+(1, 2)
+julia> _sort_tuple2((1, 2))
+(1, 2)
+```
+"""
+function _sort_tuple2(t)
+	a, b = t
+	return a > b ? (b, a) : (a, b)
+end
