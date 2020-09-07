@@ -10,7 +10,7 @@ export unicodesymbol2string, reverse_dict
 
 include("parameters.jl")
 export AbstractParameter, PolymerParameter
-export χParam, NParam, χNParam, fParam, ϕParam, RgParam, CParam, bParam, αParam, τParam
+export χParam, NParam, χNParam, fParam, ϕParam, RgParam, CParam, bParam, αParam, τParam, DEFAULT_PARAMETERS
 export description, as_variable_name, as_ascii_label, as_plot_label
 
 include("types.jl")

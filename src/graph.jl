@@ -232,3 +232,5 @@ function chaintype(g::BlockCopolymerGraph)
 end
 
 chaintype(bcp::BlockCopolymer) = chaintype(BlockCopolymerGraph(bcp))
+
+islinearchain(bcp::BlockCopolymer) = islinearchain(chaintype(bcp))

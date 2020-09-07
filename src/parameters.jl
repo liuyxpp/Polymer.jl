@@ -94,6 +94,19 @@ const τParam = PolymerParameter{:τ}(
     "Ratio of length of two or more blocks.",
     L"\tau", Float64; allowed_min=0)
 
+const DEFAULT_PARAMETERS = Dict(
+    :χ => χParam,
+    :N => NParam,
+    :χN => χNParam,
+    :f => fParam,
+    :ϕ => ϕParam,
+    :Rg => RgParam,
+    :C => CParam,
+    :b => bParam,
+    :α => αParam,
+    :τ => τParam,
+)
+
 """
 Accessors for the `PolymerParameter` type.
 """

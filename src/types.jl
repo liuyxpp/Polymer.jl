@@ -107,6 +107,7 @@ end
 
 struct RandomCopolymer <: AbstractPolymer end
 struct AlternatingCopolymer <: AbstractPolymer end
+
 struct Particle <: AbstractMolecule end
 struct GiantMolecule <: AbstractMolecule end
 
