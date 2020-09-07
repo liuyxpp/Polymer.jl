@@ -45,6 +45,13 @@ julia> homopolymer_chain() # A chain
 julia> AB_A_system() # AB/A polymer blend
 ```
 
+One can also create a polymer system using a nested Dict, which can be written in the format of a YAML file.
+
+```julia
+julia> config = load_config("test/ABS.yml")
+julia> ABS = make(config)
+```
+
 At present, there is no documentation. Consult the testing codes reside in `test` folder to learn more.
 
 ## Contribute
