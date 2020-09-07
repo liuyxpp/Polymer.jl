@@ -1,0 +1,40 @@
+# Configurations for Polymer System
+---
+System:
+  label           : AB/S
+  Species:
+    - label : A
+      type  : Segment
+      b     : 1.0
+      M     :
+    - label : B
+      type  : Segment
+      b     : 1.0
+      M     :
+    - label : S
+      type  : Small # small molecules
+      b     : 1.0
+      M     :
+  χN_map:
+    - [A, B, 20.0]
+    - [A, S, 80.0]
+    - [B, S, 120.0]
+  Components:
+    - type            : BCP # block copolymer or homopolymer
+      label           : AB
+      length          : 1.0
+      volume_fraction : 0.1
+      chain:
+        - label   : A
+          segment : A
+          length  : 0.5
+          ends    : [EB]
+        - label   : B
+          segment : B
+          length  : 0.5
+          ends    : [EB]
+    - type            : SMOL # small molecule
+      label           : S
+      length          : 0.01
+      volume_fraction : 0.9
+  chain_density: 1.0

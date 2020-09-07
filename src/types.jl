@@ -60,6 +60,7 @@ abstract type BlockEnd end
 struct FreeEnd <: BlockEnd
     label::Symbol
 end
+FreeEnd(; label=:EF) = FreeEnd(label)
 
 struct BranchPoint <: BlockEnd
     label::Symbol

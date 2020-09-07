@@ -38,3 +38,20 @@ function _sort_tuple2(t)
 	a, b = t
 	return a > b ? (b, a) : (a, b)
 end
+
+"""
+    retrieve(dict, key_of_interest, output=[])
+
+Return all values matched the `key_of_interest` in a nested Dict.
+"""
+function retrieve(dict, key_of_interest, output=[])
+    for (key, value) in dict
+        if key == key_of_interest
+                push!(output, value)
+        end
+        if value isa AbstractDict
+            retrieve(value, key_of_interest, output)
+        end
+    end
+    return output
+end

@@ -3,6 +3,7 @@ module Polymer
 using ArgCheck
 using REPL: symbol_latex
 using LaTeXStrings
+using YAML
 
 include("utils.jl")
 export unicodesymbol2string, reverse_dict
@@ -30,5 +31,9 @@ export homopolymer_chain, diblock_chain, solvent, AB_system, AB_A_system, AB_S_s
 include("graph.jl")
 export BlockCopolymerGraph, SPECIECOLORS
 export build_graph, node_styles, edge_labels, edge_styles, plot_graph, save_graph, chaintype
+
+include("make.jl")
+export ObjType
+export load_config, make
 
 end # module
