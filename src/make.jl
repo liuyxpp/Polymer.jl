@@ -21,7 +21,7 @@ A `ObjType` object can be passed to the first argument of [`make`](@ref) to disp
 * :SMOL: SmallMolecule
 * :BCP: BlockCopolymer
 * :Block: PolymerBlock
-* :Block: BlockEnd (FreeEnd and BranchPoint)
+* :BlockEnd: BlockEnd (FreeEnd and BranchPoint)
 """
 struct ObjType{name} end
 
