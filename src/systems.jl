@@ -23,10 +23,10 @@ solvent(; label=:S) = SmallMolecule(label)
 
 ## Convenient functions for creating polymer systems.
 
-"AB diblock copolymers."
-function AB_system()
-    polymer = Component(diblock_chain())
-    return PolymerSystem([polymer]; χN_map=Dict(Set([:A, :B])=>20.0))
+"Default AB diblock copolymer system: two species are A and B, lengths of both segmeents are 1.0. However, χN and fA can be changed by Keyword argument. Default values are: χN=20.0 and fA=0.5."
+function AB_system(; χN=20.0, fA=0.5)
+    polymer = Component(diblock_chain(; fA=fA))
+    return PolymerSystem([polymer]; χN_map=Dict(Set([:A, :B])=>χN))
 end
 
 "AB diblock copolymers / A homopolymers blend."

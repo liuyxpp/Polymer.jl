@@ -23,13 +23,20 @@ struct PolymerSolution <: PolymerSystemType end
 
 # traits for the type of chain architecture
 abstract type PolymerArchitecture end
-struct LinearArchitecture <: PolymerArchitecture end
-abstract type BranchedArchitecture <: PolymerArchitecture end
+# Non-cyclic architectures
+abstract type NonCyclicArchitecture <: PolymerArchitecture end
+struct LinearArchitecture <: NonCyclicArchitecture end
+abstract type BranchedArchitecture <: NonCyclicArchitecture end
 struct StarArchitecture <: BranchedArchitecture end
 struct CombArchitecture <: BranchedArchitecture end
 struct GeneralBranchedArchitecture <: BranchedArchitecture end
 # Polymer that has ring(s) in it.
-struct RingArchitecture <: PolymerArchitecture end
+abstract type CyclicArchitecture <: PolymerArchitecture end
+struct RingArchitecture <: CyclicArchitecture end
+
+iscyclicchain(::CyclicArchitecture) = true
+iscyclicchain(::PolymerArchitecture) = false
+isnoncyclicchain(pa::PolymerArchitecture) = !iscyclicchain(pa)
 
 """
     islinearchain(<:PolymerArchitecture)
@@ -77,6 +84,10 @@ struct PolymerBlock <: AbstractBlock
     E2::BlockEnd
 end
 
+function PolymerBlock(; label=:A, specie=:A, f=1.0, E1=FreeEnd(), E2=FreeEnd())
+    return PolymerBlock(label, KuhnSegment(specie), f, E1, E2)
+end
+
 """
 Check if the length of all blocks in a chain sum to 1.0.
 """
@@ -104,6 +115,8 @@ struct BlockCopolymer{T<:AbstractBlock} <: AbstractPolymer
         new{T}(label, blocks)
     end
 end
+
+nblocks(bc::BlockCopolymer) = length(bc.blocks)
 
 struct RandomCopolymer <: AbstractPolymer end
 struct AlternatingCopolymer <: AbstractPolymer end
@@ -152,6 +165,8 @@ function _isasystem(components)
     return mapreduce(x->x.ϕ, +, components) ≈ 1.0 ? true : false
 end
 
+isconfined(s::PolymerSystem) = isconfined(s.confinement)
+
 multicomponent(s::PolymerSystem) = length(s.components) == 1 ? false : true
 ncomponents(s::PolymerSystem) = length(s.components)
 
@@ -159,11 +174,11 @@ specie(s::AbstractSpecie) = s.label
 specie(m::SmallMolecule) = m.label
 specie(b::PolymerBlock) = specie(b.segment)
 
-species(c::BlockCopolymer) = [specie(b) for b in c.blocks] |> unique
+species(c::BlockCopolymer) = [specie(b) for b in c.blocks] |> unique |> sort
 nspecies(c::BlockCopolymer) = species(c) |> length
 species(m::SmallMolecule) = [specie(m)]
 nspecies(m::SmallMolecule) = 1
-function species(components)
+function _species(components)
     sp = []
     for c in components
         union!(sp, species(c))
@@ -173,11 +188,11 @@ end
 
 species(c::Component) = species(c.molecule)
 nspecies(c::Component) = species(c) |> length
-species(s::PolymerSystem) = species(s.components)
+species(s::PolymerSystem) = _species(s.components) |> sort
 nspecies(s::PolymerSystem) = species(s) |> length
 
 function _isasystem(components, χN_map)
-    sp = species(components)
+    sp = _species(components)
     n = length(sp)
     # For one-specie system, always true.
     if n == 1

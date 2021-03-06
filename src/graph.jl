@@ -9,12 +9,15 @@ struct BlockCopolymerGraph
     edge2block::Dict{Tuple{Int, Int}, PolymerBlock}
     joint2node::Dict{BranchPoint, Int}
     node2joint::Dict{Int, BranchPoint}
+    free2node::Dict{FreeEnd, Int}
+    node2free::Dict{Int, FreeEnd}
 
     function BlockCopolymerGraph(c::BlockCopolymer)
-        g, d1, d2 = build_graph(c)
+        g, d1, d2, d3 = build_graph(c)
         rd1 = reverse_dict(d1)
         rd2 = reverse_dict(d2)
-        new(g, d1, rd1, d2, rd2)
+        rd3 = reverse_dict(d3)
+        new(g, d1, rd1, d2, rd2, d3, rd3)
     end
 end
 
@@ -39,11 +42,13 @@ function build_graph(c::BlockCopolymer)
 	g = Graph()
 	d1 = Dict{PolymerBlock, Tuple{Int, Int}}()
 	d2 = Dict{BranchPoint, Int}()
+    d3 = Dict{FreeEnd, Int}()
     for b in c.blocks
         if isfreeblockend(b.E1)
             # Each free end is a distinct node in the graph.
 			add_vertex!(g)
 			e1 = nv(g)
+            d3[b.E1] = e1
         else
             # For branch point, we have to make sure if it is already added to the graph.
             # If added, we just use its node id.
@@ -60,6 +65,7 @@ function build_graph(c::BlockCopolymer)
 		if isfreeblockend(b.E2)
 			add_vertex!(g)
 			e2 = nv(g)
+            d3[b.E2] = e2
 		else
 			if b.E2 ∈ keys(d2)
 				e2 = d2[b.E2]
@@ -71,9 +77,9 @@ function build_graph(c::BlockCopolymer)
         end
         # A block always corresponds to a new edge in the graph.
 		add_edge!(g, e1, e2)
-		d1[b] = (e1, e2)
+		d1[b] = _sort_tuple2((e1, e2))
 	end
-	return g, d1, d2
+	return g, d1, d2, d3
 end
 
 """
@@ -233,4 +239,6 @@ end
 
 chaintype(bcp::BlockCopolymer) = chaintype(BlockCopolymerGraph(bcp))
 
+iscyclicchain(bcp::BlockCopolymer) = iscyclicchain(chaintype(bcp))
+isnoncyclicchain(bcp::BlockCopolymer) = !iscyclicchain(bcp)
 islinearchain(bcp::BlockCopolymer) = islinearchain(chaintype(bcp))

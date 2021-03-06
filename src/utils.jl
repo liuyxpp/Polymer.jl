@@ -47,7 +47,7 @@ Return all values matched the `key_of_interest` in a nested Dict.
 function retrieve(dict, key_of_interest, output=[])
     for (key, value) in dict
         if key == key_of_interest
-                push!(output, value)
+            push!(output, value)
         end
         if value isa AbstractDict
             retrieve(value, key_of_interest, output)
