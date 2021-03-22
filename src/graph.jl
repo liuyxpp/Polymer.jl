@@ -11,13 +11,19 @@ struct BlockCopolymerGraph
     node2joint::Dict{Int, BranchPoint}
     free2node::Dict{FreeEnd, Int}
     node2free::Dict{Int, FreeEnd}
+    distmx::Matrix{<:Real}
 
     function BlockCopolymerGraph(c::BlockCopolymer)
         g, d1, d2, d3 = build_graph(c)
         rd1 = reverse_dict(d1)
         rd2 = reverse_dict(d2)
         rd3 = reverse_dict(d3)
-        new(g, d1, rd1, d2, rd2, d3, rd3)
+        distmx = zeros(typeof(first(c.blocks).f), nv(g), nv(g))
+        for (e, block) in rd1
+            distmx[e[1], e[2]] = block.f
+            distmx[e[2], e[1]] = block.f
+        end
+        new(g, d1, rd1, d2, rd2, d3, rd3, distmx)
     end
 end
 
@@ -37,49 +43,49 @@ A block polymer chain consists of one or more polymer blocks, each of which cons
 We use LightGraphs package to describe the graph. Thus the node id is just an integer. The first added node id is 1.
 """
 function build_graph(c::BlockCopolymer)
-	e1 = 0 # the node id for the first block end.
+    e1 = 0 # the node id for the first block end.
     e2 = 0 # the node id for the second block end.
-	g = Graph()
-	d1 = Dict{PolymerBlock, Tuple{Int, Int}}()
-	d2 = Dict{BranchPoint, Int}()
+    g = Graph()
+    d1 = Dict{PolymerBlock, Tuple{Int, Int}}()
+    d2 = Dict{BranchPoint, Int}()
     d3 = Dict{FreeEnd, Int}()
     for b in c.blocks
         if isfreeblockend(b.E1)
             # Each free end is a distinct node in the graph.
-			add_vertex!(g)
-			e1 = nv(g)
+            add_vertex!(g)
+            e1 = nv(g)
             d3[b.E1] = e1
         else
             # For branch point, we have to make sure if it is already added to the graph.
             # If added, we just use its node id.
             # If not, we have to create a new node corresponds to this branch point.
-			if b.E1 ∈ keys(d2)
-				e1 = d2[b.E1]
-			else
-				add_vertex!(g)
-				e1 = nv(g)
-				d2[b.E1] = e1
-			end
+            if b.E1 ∈ keys(d2)
+                e1 = d2[b.E1]
+            else
+                add_vertex!(g)
+                e1 = nv(g)
+                d2[b.E1] = e1
+            end
         end
         # Do the same thing for the second block end.
-		if isfreeblockend(b.E2)
-			add_vertex!(g)
-			e2 = nv(g)
+        if isfreeblockend(b.E2)
+            add_vertex!(g)
+            e2 = nv(g)
             d3[b.E2] = e2
-		else
-			if b.E2 ∈ keys(d2)
-				e2 = d2[b.E2]
-			else
-				add_vertex!(g)
-				e2 = nv(g)
-				d2[b.E2] = e2
-			end
+        else
+            if b.E2 ∈ keys(d2)
+                e2 = d2[b.E2]
+            else
+                add_vertex!(g)
+                e2 = nv(g)
+                d2[b.E2] = e2
+            end
         end
         # A block always corresponds to a new edge in the graph.
-		add_edge!(g, e1, e2)
-		d1[b] = _sort_tuple2((e1, e2))
-	end
-	return g, d1, d2, d3
+        add_edge!(g, e1, e2)
+        d1[b] = _sort_tuple2((e1, e2))
+    end
+    return g, d1, d2, d3
 end
 
 """
@@ -97,11 +103,11 @@ Assign the length of a block to the label of its corresponding edge in the graph
 
 """
 function edge_labels(bcg::BlockCopolymerGraph)
-	od = Dict()
-	for (k, v) in bcg.edge2block
-		od[_sort_tuple2(k)] = v.f
-	end
-	return od
+    od = Dict()
+    for (k, v) in bcg.edge2block
+        od[_sort_tuple2(k)] = v.f
+    end
+    return od
 end
 
 """
@@ -135,7 +141,7 @@ Return a Dict of `edge => style`.
 """
 function edge_styles(bcg::BlockCopolymerGraph; colors=[], bends=[])
     sps = sort(species(bcg))
-	n = length(sps)
+    n = length(sps)
     if length(colors) < n
         colors = SPECIECOLORS
     end
@@ -147,14 +153,14 @@ function edge_styles(bcg::BlockCopolymerGraph; colors=[], bends=[])
     end
     bends = [bend ? "left" : "right" for bend in reverse(bends)]
 
-	od = Dict()
-	for (k, v) in bcg.edge2block
-		bend = pop!(bends)
-		color = cd[specie(v)]
-		style = "ultra thick, $color, bend $bend"
-		od[_sort_tuple2(k)] = style
-	end
-	return od
+    od = Dict()
+    for (k, v) in bcg.edge2block
+        bend = pop!(bends)
+        color = cd[specie(v)]
+        style = "ultra thick, $color, bend $bend"
+        od[_sort_tuple2(k)] = style
+    end
+    return od
 end
 
 """
@@ -163,9 +169,9 @@ Show `BlockCopolymerGraph` object as an image.
 function Base.show(io::IO, mime::MIME"image/svg+xml", g::BlockCopolymerGraph)
     tp = TikzGraphs.plot(g.graph,
                     node_styles=node_styles(g),
-					edge_labels=edge_labels(g),
-					edge_styles=edge_styles(g),
-					layout=Layouts.SpringElectrical(),
+                    edge_labels=edge_labels(g),
+                    edge_styles=edge_styles(g),
+                    layout=Layouts.SpringElectrical(),
                     options="scale=3")
     show(io, mime, tp)
 end
@@ -184,9 +190,9 @@ Similar to `show` method. But this method can configure extra options for plotti
 function plot_graph(g::BlockCopolymerGraph; colors=[], bends=[])
     return TikzGraphs.plot(g.graph,
                     node_styles=node_styles(g),
-					edge_labels=edge_labels(g),
-					edge_styles=edge_styles(g; colors=colors, bends=bends),
-					layout=Layouts.SpringElectrical(),
+                    edge_labels=edge_labels(g),
+                    edge_styles=edge_styles(g; colors=colors, bends=bends),
+                    layout=Layouts.SpringElectrical(),
                     options="scale=3")
 end
 
