@@ -44,16 +44,6 @@ export
     NeatPolymer, PolymerBlend,
     PolymerSolution
 export
-    PolymerArchitecture,
-    NonCyclicArchitecture,
-    CyclicArchitecture,
-    LinearArchitecture,
-    BranchedArchitecture,
-    StarArchitecture,
-    CombArchitecture,
-    GeneralBranchedArchitecture,
-    RingArchitecture
-export
     SpaceDimension,
     D1, D2, D3
 export
@@ -92,9 +82,6 @@ export
     AbstractSystem,
     PolymerSystem
 export
-    iscyclicchain,
-    isnoncyclicchain,
-    islinearchain,
     isconfined,
     ischarged,
     isfreeblockend,
@@ -114,19 +101,6 @@ export
     AB_system,
     AB_A_system,
     AB_S_system
-
-include("graph.jl")
-export
-    BlockCopolymerGraph,
-    SPECIECOLORS
-export
-    build_graph,
-    node_styles,
-    edge_labels,
-    edge_styles,
-    plot_graph,
-    save_graph,
-    chaintype
 
 include("make.jl")
 export

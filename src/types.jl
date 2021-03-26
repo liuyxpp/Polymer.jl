@@ -21,31 +21,6 @@ struct NeatPolymer <: PolymerSystemType end
 struct PolymerBlend <: PolymerSystemType end
 struct PolymerSolution <: PolymerSystemType end
 
-# traits for the type of chain architecture
-abstract type PolymerArchitecture end
-# Non-cyclic architectures
-abstract type NonCyclicArchitecture <: PolymerArchitecture end
-struct LinearArchitecture <: NonCyclicArchitecture end
-abstract type BranchedArchitecture <: NonCyclicArchitecture end
-struct StarArchitecture <: BranchedArchitecture end
-struct CombArchitecture <: BranchedArchitecture end
-struct GeneralBranchedArchitecture <: BranchedArchitecture end
-# Polymer that has ring(s) in it.
-abstract type CyclicArchitecture <: PolymerArchitecture end
-struct RingArchitecture <: CyclicArchitecture end
-
-iscyclicchain(::CyclicArchitecture) = true
-iscyclicchain(::PolymerArchitecture) = false
-isnoncyclicchain(pa::PolymerArchitecture) = !iscyclicchain(pa)
-
-"""
-    islinearchain(<:PolymerArchitecture)
-
-Check if the chain is linear. Currently we use explicit traits to check. It is possible to check the architecture by examining PolymerComponent instance. But it is not implemented yet.
-"""
-islinearchain(::LinearArchitecture) = true
-islinearchain(::PolymerArchitecture) = false
-
 # traits for the type of charge distribution
 abstract type ChargedType end
 struct Neutral <: ChargedType end

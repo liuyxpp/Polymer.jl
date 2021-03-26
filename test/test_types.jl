@@ -13,13 +13,6 @@ end
     @test ischarged(DiscreteCharge()) == true
 end
 
-@testset "types.jl: Polymer" begin
-    @test islinearchain(LinearArchitecture()) == true
-    @test islinearchain(StarArchitecture()) == false
-    @test islinearchain(CombArchitecture()) == false
-    @test islinearchain(RingArchitecture()) == false
-end
-
 @testset "types.jl: Specie" begin
     segment = KuhnSegment(:A)
     @test segment.b == 1.0

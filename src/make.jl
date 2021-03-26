@@ -104,7 +104,8 @@ function make(::ObjType{:Specie}, config)
 end
 
 function make(::ObjType{:χN_map}, config)
-    χN_map = Dict()
+    sp1, sp2, χN = first(config)
+    χN_map = Dict{Set{Symbol}, eltype(χN)}()
     for a in config
         s1, s2, χN = a
         χN_map[Set([Symbol(s1), Symbol(s2)])] = χN
@@ -124,12 +125,14 @@ function make(::ObjType{:System}, config)
     components = [make(ObjType{:Component}(), c, sps) for c in config["Components"]]
     kwargs = Dict()
     if haskey(config, "χN_map")
-        kwargs[:χN_map] = make(ObjType{:χN_map}(), config["χN_map"])
+        χN_map = make(ObjType{:χN_map}(), config["χN_map"])
+    else
+        error("Must provide an interaction map.")
     end
     if haskey(config, "chain_density")
         kwargs[:C] = config["chain_density"]
     end
-    return PolymerSystem(components; kwargs...)
+    return PolymerSystem(components, χN_map; kwargs...)
 end
 
 make(config) = make(ObjType{:System}(), config["System"])
