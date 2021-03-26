@@ -26,23 +26,23 @@ solvent(; label=:S) = SmallMolecule(label)
 "Default AB diblock copolymer system: two species are A and B, lengths of both segmeents are 1.0. However, χN and fA can be changed by Keyword argument. Default values are: χN=20.0 and fA=0.5."
 function AB_system(; χN=20.0, fA=0.5)
     polymer = Component(diblock_chain(; fA=fA))
-    return PolymerSystem([polymer]; χN_map=Dict(Set([:A, :B])=>χN))
+    return PolymerSystem([polymer], Dict(Set([:A, :B])=>χN))
 end
 
 "AB diblock copolymers / A homopolymers blend."
 function AB_A_system()
     polymerAB = Component(diblock_chain(), 1.0, 0.5)
     polymerA = Component(homopolymer_chain(; label=:hA, segment=KuhnSegment(:A)), 0.5, 0.5)
-    return PolymerSystem([polymerAB, polymerA];
-                         χN_map=Dict(Set([:A, :B])=>20.0))
+    return PolymerSystem([polymerAB, polymerA],
+                         Dict(Set([:A, :B])=>20.0))
 end
 
 "AB diblock copolymers + solvent solution."
 function AB_S_system()
     polymer = Component(diblock_chain(), 1.0, 0.1)
     sol = Component(solvent(), 0.01, 0.9)
-    return PolymerSystem([polymer, sol];
-                         χN_map=Dict(
+    return PolymerSystem([polymer, sol],
+                         Dict(
                              Set([:A,:B])=>20.0,
                              Set([:A,:S])=>100.0,
                              Set([:B,:S])=>100.0

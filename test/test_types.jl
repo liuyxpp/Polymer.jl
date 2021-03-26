@@ -73,7 +73,8 @@ end
         Set([:A,:B])=>20.0,
         Set([:A,:S])=>80.0,
         Set([:B,:S])=>120.0)
-    ABS = PolymerSystem([polymer, solvent]; χN_map=χN_map)
+    m = χNMatrix(χN_map)
+    ABS = PolymerSystem([polymer, solvent], m)
     @test isconfined(ABS.confinement) == false
     @test ABS.C == 1.0
 
@@ -107,7 +108,7 @@ end
     polymerAB = Component(chainAB, 1.0, 0.5)
     polymerA = Component(chainA, 0.5, 0.5)
     χN_map = Dict(Set([:A,:B])=>20.0)
-    AB_A = PolymerSystem([polymerAB, polymerA]; χN_map=χN_map)
+    AB_A = PolymerSystem([polymerAB, polymerA], χN_map)
 
     @test multicomponent(AB_A) == true
     @test ncomponents(AB_A) == 2

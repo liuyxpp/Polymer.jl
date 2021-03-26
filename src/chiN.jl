@@ -53,6 +53,8 @@ function χNMatrix(map::Dict{Set{Symbol}, T}) where T<:Real
     return χNMatrix(map, mat, imat)
 end
 
+species(m::χNMatrix) = _species(m.map)
+
 Base.size(A::χNMatrix) = size(A.mat)
 Base.getindex(A::χNMatrix, i::Int) = getindex(A.mat, i)
 Base.getindex(A::χNMatrix, I::Vararg{Int, N}) where N = getindex(A.mat, I...)
