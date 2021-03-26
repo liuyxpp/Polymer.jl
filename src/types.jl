@@ -179,7 +179,7 @@ nspecies(c::BlockCopolymer) = species(c) |> length
 species(m::SmallMolecule) = [specie(m)]
 nspecies(m::SmallMolecule) = 1
 function _species(components)
-    sp = []
+    sp = Symbol[]
     for c in components
         union!(sp, species(c))
     end

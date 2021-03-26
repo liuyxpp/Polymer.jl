@@ -1,5 +1,6 @@
 module Polymer
 
+using LinearAlgebra
 using ArgCheck
 using REPL: symbol_latex
 using LaTeXStrings
@@ -31,6 +32,11 @@ export
     as_variable_name,
     as_ascii_label,
     as_plot_label
+
+include("chiN.jl")
+export
+    AbstractχNMatrix,
+    χNMatrix
 
 include("types.jl")
 export
