@@ -35,8 +35,8 @@ julia> _sort_tuple2((1, 2))
 ```
 """
 function _sort_tuple2(t)
-	a, b = t
-	return a > b ? (b, a) : (a, b)
+    a, b = t
+    return a > b ? (b, a) : (a, b)
 end
 
 """

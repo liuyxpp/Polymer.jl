@@ -112,6 +112,7 @@ Accessors for the `PolymerParameter` type.
 """
 description(p::AbstractParameter) = p.description
 value_type(p::AbstractParameter) = p.value_type
+variable_symbol(::AbstractParameter{T,R}) where {T,R} = T
 as_variable_name(p::AbstractParameter) = p.variable_name
 as_ascii_label(p::AbstractParameter) = p.ascii_label
 as_plot_label(p::AbstractParameter) = p.plot_label

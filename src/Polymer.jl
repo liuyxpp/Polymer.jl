@@ -29,6 +29,8 @@ export
     DEFAULT_PARAMETERS
 export
     description,
+    value_type,
+    variable_symbol,
     as_variable_name,
     as_ascii_label,
     as_plot_label
