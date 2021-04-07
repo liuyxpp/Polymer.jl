@@ -6,14 +6,6 @@ version = "0.5.0"
 [deps]
 ArgCheck = "dce04be8-c92d-5529-be00-80e4d2c0e197"
 LaTeXStrings = "b964fa9f-0449-5b57-a5c2-d3ea65f4040f"
-LightGraphs = "093fc24a-ae57-5d10-9952-331d41423f4d"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 REPL = "3fa0cd96-eef1-5676-8a61-b3b8758bbffb"
-TikzGraphs = "b4f28e30-c73f-5eaf-a395-8a9db949a742"
-TikzPictures = "37f6aa50-8035-52d0-81c2-5a1d08754b2d"
 YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
-
-[compat]
-LightGraphs = "1.3.3"
-TikzGraphs = "1.1.0"
-TikzPictures = "3.3.0"
