@@ -30,22 +30,22 @@ function AB_system(; χN=20.0, fA=0.5)
 end
 
 "AB diblock copolymers / A homopolymers blend."
-function AB_A_system()
-    polymerAB = Component(diblock_chain(), 1.0, 0.5)
-    polymerA = Component(homopolymer_chain(; label=:hA, segment=KuhnSegment(:A)), 0.5, 0.5)
+function AB_A_system(; χN=20.0, ϕAB=0.5, fA=0.5, α=0.5)
+    polymerAB = Component(diblock_chain(; fA=fA), 1.0, ϕAB)
+    polymerA = Component(homopolymer_chain(; label=:hA, segment=KuhnSegment(:A)), α, 1-ϕAB)
     return PolymerSystem([polymerAB, polymerA],
-                         Dict(Set([:A, :B])=>20.0))
+                         Dict(Set([:A, :B])=>χN))
 end
 
 "AB diblock copolymers + solvent solution."
-function AB_S_system()
-    polymer = Component(diblock_chain(), 1.0, 0.1)
-    sol = Component(solvent(), 0.01, 0.9)
+function AB_S_system(; χNAB=20.0, χNAS=100.0, χNBS=100.0, ϕAB=0.1, fA=0.5, α=0.01)
+    polymer = Component(diblock_chain(; fA=fA), 1.0, ϕAB)
+    sol = Component(solvent(), α, 1-ϕAB)
     return PolymerSystem([polymer, sol],
                          Dict(
-                             Set([:A,:B])=>20.0,
-                             Set([:A,:S])=>100.0,
-                             Set([:B,:S])=>100.0
+                             Set([:A,:B])=>χNAB,
+                             Set([:A,:S])=>χNAS,
+                             Set([:B,:S])=>χNBS
                              )
                         )
 end

@@ -83,6 +83,8 @@ export
     Component,
     AbstractSystem,
     PolymerSystem
+
+include("properties.jl")
 export
     isconfined,
     ischarged,
