@@ -24,7 +24,7 @@ System:
       label           : AB
       length          : 1.0
       volume_fraction : 0.1
-      chain:
+      blocks:
         - label   : A
           segment : A
           length  : 0.5
