@@ -102,7 +102,8 @@ export
     species,
     nspecies,
     nblocks,
-    systemtype
+    systemtype,
+    component_number_type
 
 include("systems.jl")
 export
