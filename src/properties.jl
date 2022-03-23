@@ -36,6 +36,20 @@ function systemtype(s::PolymerSystem)
     return PolymerBlend()
 end
 
+function component_number_type(s::PolymerSystem)
+    nc = ncomponents(s)
+    if nc == 1
+        t = MonoSystem()
+    elseif nc == 2
+        t = BinarySystem()
+    elseif nc == 3
+        t = TernarySystem()
+    else
+        t = MultiComponentSystem()
+    end
+    return t
+end
+
 """
     ϕ̄(c::Component{SmallMolecule}, sp::Symbol)
     ϕ̄(c::Component{<:BlockCopolymer}, sp::Symbol)

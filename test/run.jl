@@ -8,5 +8,6 @@ include("test_types.jl")
 include("test_systems.jl")
 include("test_make.jl")
 include("test_properties.jl")
+include("test_update.jl")
 
 nothing
