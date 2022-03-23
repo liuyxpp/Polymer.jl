@@ -21,6 +21,13 @@ struct NeatPolymer <: PolymerSystemType end
 struct PolymerBlend <: PolymerSystemType end
 struct PolymerSolution <: PolymerSystemType end
 
+# traits for multicomponent system
+abstract type ComponentNumberType end
+struct MonoSystem <: ComponentNumberType end
+struct BinarySystem <: ComponentNumberType end
+struct TernarySystem <: ComponentNumberType end
+struct MultiComponentSystem <: ComponentNumberType end
+
 # traits for the type of charge distribution
 abstract type ChargedType end
 struct Neutral <: ChargedType end

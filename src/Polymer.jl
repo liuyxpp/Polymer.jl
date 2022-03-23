@@ -43,8 +43,15 @@ export
 include("types.jl")
 export
     PolymerSystemType,
-    NeatPolymer, PolymerBlend,
+    NeatPolymer,
+    PolymerBlend,
     PolymerSolution
+export
+    ComponentNumberType,
+    MonoSystem,
+    BinarySystem,
+    TernarySystem,
+    MultiComponentSystem
 export
     SpaceDimension,
     D1, D2, D3
@@ -95,7 +102,8 @@ export
     species,
     nspecies,
     nblocks,
-    systemtype
+    systemtype,
+    component_number_type
 
 include("systems.jl")
 export
@@ -104,7 +112,9 @@ export
     solvent,
     AB_system,
     AB_A_system,
-    AB_S_system
+    AB_S_system,
+    A_B_S_system,
+    A_B_S1_S2_system
 
 include("make.jl")
 export
@@ -112,5 +122,8 @@ export
 export
     load_config,
     make
+
+include("update.jl")
+# update is not exported because of possible name confilication
 
 end # module

@@ -57,7 +57,7 @@ end
 
 function make(::ObjType{:BCP}, config, sps)
     label = Symbol(config["label"])
-    blocks = [make(ObjType{:Block}(), c, sps) for c in config["chain"]]
+    blocks = [make(ObjType{:Block}(), c, sps) for c in config["blocks"]]
     return BlockCopolymer(label, blocks)
 end
 
