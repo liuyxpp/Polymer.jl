@@ -112,7 +112,9 @@ export
     solvent,
     AB_system,
     AB_A_system,
-    AB_S_system
+    AB_S_system,
+    A_B_S_system,
+    A_B_S1_S2_system
 
 include("make.jl")
 export
