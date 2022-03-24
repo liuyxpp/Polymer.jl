@@ -11,12 +11,12 @@ function update!(system::PolymerSystem, ϕs::AbstractVector, ::PolymerParameter{
         system.components[i] = Component(c.molecule, c.α, ϕs[i])
     end
 
-    return nothing
+    return system
 end
 
 function update!(system::PolymerSystem, ϕ::Real, ::PolymerParameter{:ϕ})
     nc = ncomponents(system)
     (nc == 2) || error("Binary system expected!")
 
-    update!(system, [ϕ, one(ϕ)-ϕ], ϕParam)
+    return update!(system, [ϕ, one(ϕ)-ϕ], ϕParam)
 end
