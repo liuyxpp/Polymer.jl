@@ -204,70 +204,73 @@ end
 # update bParam
 #################
 
-function update!(bcp::BlockCopolymer, id_block::Integer, b::Real, ::bType)
+function _update!(bcp::BlockCopolymer, id_block::Integer, b::Real, ::bType)
     bk = bcp.blocks[id_block]
     bcp.blocks[id_block] = @set bk.segment.b = b
     return bcp
 end
 
-function update!(bcp::BlockCopolymer, label_block::Symbol, b::Real, ::bType)
+function _update!(bcp::BlockCopolymer, label_block::Symbol, b::Real, ::bType)
     id_block = block_id(label_block, bcp)
-    return update!(bcp, id_block, b, bParam)
+    return _update!(bcp, id_block, b, bParam)
 end
 
-function update!(bcp::BlockCopolymer, ids::AbstractVector{<:Integer}, bs::AbstractVector, ::bType)
+function _update!(bcp::BlockCopolymer, ids::AbstractVector{<:Integer}, bs::AbstractVector, ::bType)
     (length(ids) == length(bs)) || error("Length of ids and bs should be equal!")
 
     for (id, b) in zip(ids, bs)
-        update!(bcp, id, b, bParam)
+        _update!(bcp, id, b, bParam)
     end
     return bcp
 end
 
-function update!(bcp::BlockCopolymer, labels::AbstractVector{<:Symbol}, bs::AbstractVector, ::bType)
+function _update!(bcp::BlockCopolymer, labels::AbstractVector{<:Symbol}, bs::AbstractVector, ::bType)
     ids = [block_id(label, bcp) for label in labels]
-    return update!(bcp, ids, bs, bParam)
+    return _update!(bcp, ids, bs, bParam)
 end
 
 """
 The sequence of `bs` should be consistent with `block_ids`.
 """
-function update!(bcp::BlockCopolymer, bs::AbstractVector, ::bType)
+function _update!(bcp::BlockCopolymer, bs::AbstractVector, ::bType)
     nb = nblocks(bcp)
     (nb == length(bs)) || error("Length of bs must be equal to the number of blocks!")
 
-    return update!(bcp, 1:nb, bs, bParam)
+    return _update!(bcp, 1:nb, bs, bParam)
+end
+
+function _update(smol::SmallMolecule, b, ::bType)
+    return @set smol.b = b
 end
 
 """
-`id_mol` is the id of a BlockCopolymer.
-`id_or_label` and `b` can be either scalar or vector.
+All blocks and/or small molecules consisting of the same specie should be updated together.
+`sp` is the label of a specie (KuhnSegment and SmallMolecule).
 """
-function update!(system::PolymerSystem, id_mol::Integer, id_or_label, b, ::bType)
-    mol = molecule(id_mol, system)
-    update!(mol, id_or_label, b, bParam)
-    return update!(system, id_mol, mol)
+function update!(system::PolymerSystem, sp::Symbol, b::Real, ::bType)
+    for mol in molecules(system)
+        if mol isa SmallMolecule
+            println("small molecule")
+            (specie(mol) == sp) && update!(system, mol, _update(mol, b, bParam))
+        else
+            id_mol = molecule_id(mol, system)
+            labels = Symbol[]
+            for bk in blocks(mol)
+                (specie(bk) == sp) && push!(labels, block_label(bk))
+            end
+            if !isempty(labels)
+                _update!(mol, labels, fill(b, length(labels)), bParam)
+                update!(system, id_mol, mol)
+            end
+        end
+    end
+    return system
 end
 
-"""
-`bcp` is the label or instance of a BlockCopolymer.
-`id_or_label` and `b` can be either scalar or vector.
-"""
-function update!(system::PolymerSystem, bcp, id_or_label, b, ::bType)
-    return update!(system, molecule_id(bcp, system), id_or_label, b, bParam)
-end
-
-"""
-The sequence of `bs` should be consistent with `block_ids`.
-"""
-function update!(system::PolymerSystem, id_mol::Integer, bs::AbstractVector, ::bType)
-    return update!(system, id_mol, 1:length(bs), bs, bParam)
-end
-
-"""
-`bcp` can be the label or instance of a BlockCopolymer.
-The sequence of `bs` should be consistent with `block_ids`.
-"""
-function update!(system::PolymerSystem, bcp, bs::AbstractVector, ::bType)
-    return update!(system, molecule_id(bcp, system), bs, bParam)
+function update!(system::PolymerSystem, sps::AbstractVector, bs::AbstractVector, ::bType)
+    (length(sps) == length(bs)) || error("Lengths of sps and bs must be equal!")
+    for (sp, b) in zip(sps, bs)
+        update!(system, sp, b, bParam)
+    end
+    return system
 end

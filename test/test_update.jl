@@ -165,80 +165,35 @@ end
 
 @testset "update.jl: bParam" begin
     bcp = starAB3()
-    update!(bcp, 3, 1.2, bParam)
+    Polymer._update!(bcp, 3, 1.2, bParam)
     @test block_bs(bcp) == [1.0, 1.0, 1.2, 1.0]
 
     bcp = starAB3()
-    update!(bcp, :B2, 1.2, bParam)
+    Polymer._update!(bcp, :B2, 1.2, bParam)
     @test block_bs(bcp) == [1.0, 1.0, 1.2, 1.0]
 
     bcp = starAB3()
-    update!(bcp, [:B3, :B1, :B2], [1.3, 1.1, 1.2], bParam)
+    Polymer._update!(bcp, [:B3, :B1, :B2], [1.3, 1.1, 1.2], bParam)
     @test block_bs(bcp) == [1.0, 1.1, 1.2, 1.3]
 
     bcp = starAB3()
-    update!(bcp, [1.0, 1.2, 1.2, 1.2], bParam)
+    Polymer._update!(bcp, [1.0, 1.2, 1.2, 1.2], bParam)
     @test block_bs(bcp) == [1.0, 1.2, 1.2, 1.2]
 
     system = AB3_A_system()
-    update!(system, 1, 3, 1.2, bParam)
-    @test block_bs(molecule(1,system)) == [1.0, 1.0, 1.2, 1.0]
+    update!(system, :A, 1.2, bParam)
+    @test block_bs(molecule(1,system)) == [1.2, 1.0, 1.0, 1.0]
+    @test block_bs(molecule(2,system)) == [1.2]
 
     system = AB3_A_system()
-    update!(system, 1, [4, 2, 3], [1.3, 1.1, 1.2], bParam)
-    @test block_bs(molecule(1,system)) == [1.0, 1.1, 1.2, 1.3]
+    update!(system, :B, 1.2, bParam)
+    @test block_bs(molecule(1,system)) == [1.0, 1.2, 1.2, 1.2]
+    @test block_bs(molecule(2,system)) == [1.0]
 
     system = AB3_A_system()
-    update!(system, 1, :B2, 1.2, bParam)
-    @test block_bs(molecule(1,system)) == [1.0, 1.0, 1.2, 1.0]
-
-    system = AB3_A_system()
-    update!(system, 1, [:B3, :B1, :B2], [1.3, 1.1, 1.2], bParam)
-    @test block_bs(molecule(1,system)) == [1.0, 1.1, 1.2, 1.3]
-
-    system = AB3_A_system()
-    update!(system, :AB3, 3, 1.2, bParam)
-    @test block_bs(molecule(:AB3,system)) == [1.0, 1.0, 1.2, 1.0]
-
-    system = AB3_A_system()
-    update!(system, :AB3, [4, 2, 3], [1.3, 1.1, 1.2], bParam)
-    @test block_bs(molecule(:AB3,system)) == [1.0, 1.1, 1.2, 1.3]
-
-    system = AB3_A_system()
-    update!(system, :AB3, :B2, 1.2, bParam)
-    @test block_bs(molecule(:AB3,system)) == [1.0, 1.0, 1.2, 1.0]
-
-    system = AB3_A_system()
-    update!(system, :AB3, [:B3, :B1, :B2], [1.3, 1.1, 1.2], bParam)
-    @test block_bs(molecule(:AB3,system)) == [1.0, 1.1, 1.2, 1.3]
-
-    system = AB3_A_system()
-    update!(system, molecule(:AB3,system), 3, 1.2, bParam)
-    @test block_bs(molecule(:AB3,system)) == [1.0, 1.0, 1.2, 1.0]
-
-    system = AB3_A_system()
-    update!(system, molecule(:AB3,system), [4, 2, 3], [1.3, 1.1, 1.2], bParam)
-    @test block_bs(molecule(:AB3,system)) == [1.0, 1.1, 1.2, 1.3]
-
-    system = AB3_A_system()
-    update!(system, molecule(:AB3,system), :B2, 1.2, bParam)
-    @test block_bs(molecule(:AB3,system)) == [1.0, 1.0, 1.2, 1.0]
-
-    system = AB3_A_system()
-    update!(system, molecule(:AB3,system), [:B3, :B1, :B2], [1.3, 1.1, 1.2], bParam)
-    @test block_bs(molecule(:AB3,system)) == [1.0, 1.1, 1.2, 1.3]
-
-    system = AB3_A_system()
-    update!(system, 1, [1.0, 1.1, 1.2, 1.3], bParam)
-    @test block_bs(molecule(1,system)) == [1.0, 1.1, 1.2, 1.3]
-
-    system = AB3_A_system()
-    update!(system, :AB3, [1.0, 1.1, 1.2, 1.3], bParam)
-    @test block_bs(molecule(:AB3,system)) == [1.0, 1.1, 1.2, 1.3]
-
-    system = AB3_A_system()
-    update!(system, molecule(:AB3,system), [1.0, 1.1, 1.2, 1.3], bParam)
-    @test block_bs(molecule(:AB3,system)) == [1.0, 1.1, 1.2, 1.3]
+    update!(system, [:A, :B], [1.1, 1.2], bParam)
+    @test block_bs(molecule(1,system)) == [1.1, 1.2, 1.2, 1.2]
+    @test block_bs(molecule(2,system)) == [1.1]
 end
 
 nothing
