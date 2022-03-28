@@ -250,7 +250,6 @@ All blocks and/or small molecules consisting of the same specie should be update
 function update!(system::PolymerSystem, sp::Symbol, b::Real, ::bType)
     for mol in molecules(system)
         if mol isa SmallMolecule
-            println("small molecule")
             (specie(mol) == sp) && update!(system, mol, _update(mol, b, bParam))
         else
             id_mol = molecule_id(mol, system)

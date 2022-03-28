@@ -54,6 +54,8 @@ using Polymer
     @test block_bs(bcp) == [1.0, 1.0]
     @test block_b(1, bcp) == 1.0
     @test block_b(:A, bcp) == 1.0
+    @test Polymer.b(:A, model) == 1.0
+    @test Polymer.b(:B, model) == 1.0
 
     model = AB_S_system()
     @test component_number_type(model) == BinarySystem()
