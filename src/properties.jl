@@ -119,6 +119,8 @@ function b(sp::Symbol, system::PolymerSystem)
     end
 end
 
+bs(system) = [b(sp, system) for sp in species(system)]
+
 """
     ϕ̄(c::Component{SmallMolecule}, sp::Symbol)
     ϕ̄(c::Component{<:BlockCopolymer}, sp::Symbol)
