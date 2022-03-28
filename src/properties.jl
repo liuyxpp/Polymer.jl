@@ -1,5 +1,8 @@
 isconfined(s::PolymerSystem) = isconfined(s.confinement)
 
+χN(s::PolymerSystem, sp1::Symbol, sp2::Symbol) = s.χNmatrix[sp1, sp2]
+χNmap(s::PolymerSystem) = s.χNmatrix.map
+
 multicomponent(s::PolymerSystem) = length(s.components) == 1 ? false : true
 ncomponents(s::PolymerSystem) = length(s.components)
 
@@ -49,6 +52,59 @@ function component_number_type(s::PolymerSystem)
     end
     return t
 end
+
+component_label(c::Component) = c.molecule.label
+component_labels(s::PolymerSystem) = [component_label(c) for c in s.components]
+
+component_ids(s::PolymerSystem) = collect(1:ncomponents(s))
+component_id(label::Symbol, s::PolymerSystem) = findfirst(component_labels(s) .== label)
+component_id(c::Component, s::PolymerSystem) = component_id(component_label(c), s)
+
+function component_label(id::Integer, s::PolymerSystem)
+    (id < 1 || id > ncomponents(s)) && return nothing
+    return component_labels(s)[id]
+end
+
+ϕs(s::PolymerSystem) = [c.ϕ for c in s.components]
+ϕ(id::Integer, s::PolymerSystem) = ϕs(s)[id]
+ϕ(label::Symbol, s::PolymerSystem) = ϕ(component_id(label, s), s)
+
+αs(s::PolymerSystem) = [c.α for c in s.components]
+α(id::Integer, s::PolymerSystem) = αs(s)[id]
+α(label::Symbol, s::PolymerSystem) = α(component_id(label, s), s)
+
+molecules(s::PolymerSystem) = [c.molecule for c in s.components]
+molecule(id::Integer, s::PolymerSystem) = molecules(s)[id]
+molecule(label::Symbol, s::PolymerSystem) = molecule(component_id(label, s), s)
+molecule_labels(s::PolymerSystem) = component_labels(s)
+molecule_label(id::Integer, s::PolymerSystem) = component_label(id, s)
+molecule_label(mol::AbstractMolecule) = mol.label
+molecule_ids(s::PolymerSystem) = component_ids(s)
+molecule_id(label::Symbol, s::PolymerSystem) = component_id(label, s)
+molecule_id(mol::AbstractMolecule, s::PolymerSystem) = molecule_id(molecule_label(mol), s)
+
+blocks(bcp::BlockCopolymer) = bcp.blocks
+block_labels(bcp::BlockCopolymer) = [b.label for b in bcp.blocks]
+block_label(b::AbstractBlock) = b.label
+block_ids(bcp::BlockCopolymer) = collect(1:nblocks(bcp))
+block_id(label::Symbol, bcp::BlockCopolymer) = findfirst(block_labels(bcp) .== label)
+block_label(id::Integer, bcp::BlockCopolymer) = block_labels(bcp)[id]
+block_id(b::AbstractBlock, bcp::BlockCopolymer) = block_id(block_label(b), bcp)
+
+block(id::Integer, bcp::BlockCopolymer) = bcp.blocks[id]
+block(label::Symbol, bcp::BlockCopolymer) = block(block_id(label, bcp), bcp)
+
+block_lengths(bcp::BlockCopolymer) = [b.f for b in bcp.blocks]
+block_length(id::Integer, bcp::BlockCopolymer) = block_lengths(bcp)[id]
+block_length(label::Symbol, bcp::BlockCopolymer) = block_length(block_id(label, bcp), bcp)
+
+block_species(bcp::BlockCopolymer) = [specie(b) for b in bcp.blocks]
+block_specie(id::Integer, bcp::BlockCopolymer) = block_species(bcp)[id]
+block_specie(label::Symbol, bcp::BlockCopolymer) = block_specie(block_id(label, bcp), bcp)
+
+block_bs(bcp::BlockCopolymer) = [b.segment.b for b in bcp.blocks]
+block_b(id::Integer, bcp::BlockCopolymer) = block_bs(bcp)[id]
+block_b(label::Symbol, bcp::BlockCopolymer) = block_b(block_id(label, bcp), bcp)
 
 """
     ϕ̄(c::Component{SmallMolecule}, sp::Symbol)

@@ -63,6 +63,17 @@ end
 """
 A list of pre-defined polymer parameters.
 """
+const χType = PolymerParameter{:χ, <:Real}
+const NType = PolymerParameter{:N, <:Real}
+const χNType = PolymerParameter{:χN, <:Real}
+const fType = PolymerParameter{:f, <:Real}
+const ϕType = PolymerParameter{:ϕ, <:Real}
+const RgType = PolymerParameter{:Rg, <:Real}
+const CType = PolymerParameter{:C, <:Real}
+const bType = PolymerParameter{:b, <:Real}
+const αType = PolymerParameter{:α, <:Real}
+const τType = PolymerParameter{:τ, <:Real}
+
 const χParam = PolymerParameter{:χ}(
     "Flory-Huggins Interaction Parameter.",
     L"\chi", Float64)

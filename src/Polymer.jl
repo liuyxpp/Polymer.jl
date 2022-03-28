@@ -5,6 +5,7 @@ using ArgCheck
 using REPL: symbol_latex
 using LaTeXStrings
 using YAML
+using Setfield
 
 include("utils.jl")
 export
@@ -16,6 +17,16 @@ export
     AbstractParameter,
     PolymerParameter
 export
+    χType,
+    NType,
+    χNType,
+    fType,
+    ϕType,
+    RgType,
+    CType,
+    bType,
+    αType,
+    τType,
     χParam,
     NParam,
     χNParam,
@@ -39,6 +50,8 @@ include("chiN.jl")
 export
     AbstractχNMatrix,
     χNMatrix
+    # Not exported but useful:
+    # χN, χNmap
 
 include("types.jl")
 export
@@ -98,12 +111,22 @@ export
     isfreeblockend,
     multicomponent,
     ncomponents,
-    specie,
-    species,
-    nspecies,
+    specie, species, nspecies,
     nblocks,
     systemtype,
-    component_number_type
+    component_number_type,
+    component_label, component_labels,
+    component_id, component_ids,
+    molecule_id, molecule_ids,
+    molecule_label, molecule_labels,
+    block_id, block_ids,
+    block_label, block_labels,
+    block_length, block_lengths,
+    block_specie, block_species,
+    block_b, block_bs
+    # not exported but useful functions:
+    # ϕ, ϕs, α, αs, molecules, molecule,
+    # blocks, block
 
 include("systems.jl")
 export
