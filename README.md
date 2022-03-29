@@ -52,7 +52,23 @@ julia> config = load_config("test/ABS.yml")
 julia> ABS = make(config)
 ```
 
-At present, there is no documentation. Consult the testing codes reside in `test` folder to learn more.
+Parameters in a parameters can be achieved or updated easily via `update!` or `setparam!` function. There are two kinds of parameter defined by `AbstractParameter` and `AbstractControlParameter`, respectively. The first kind makes lower level setting of parameters possible. However, it is more complicated and the signature of `update!` is less unified. The second kind provides a convenient and unified way to read and write a PolymerSystem instance. However, it only supports update a single value of any parameter. One can use `AbstractControlParameter` to define a parameter which is considered to be an independent variable in a set of simulations or for construction of a phase diagram. Currently, there are 5 concrete types of `AbstractControlParameter`:
+
+* `ϕControlParameter`
+* `αControlParameter`
+* `χNControlParameter`
+* `fControlParameter`
+* `bControlParameter`
+
+```julia
+julia> system = AB_A_system()
+# ϕAB = 0.5, ϕA = 0.5
+julia> ϕA = ϕControlParameter(2, ϕParam)  # ϕA is the control parameter
+julia> update!(system, 0.6, ϕA)  # ϕAB will be updated accordingly due to the conservation of mass.
+# ϕAB = 0.4, ϕA = 0.6
+```
+
+For more details, consult the testing codes reside in `test` folder.
 
 ## Contribute
 
