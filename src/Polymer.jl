@@ -45,6 +45,13 @@ export
     as_variable_name,
     as_ascii_label,
     as_plot_label
+export
+    AbstractControlParameter,
+    ϕControlParameter,
+    αControlParameter,
+    fControlParameter,
+    χNControlParameter,
+    bControlParameter
 
 include("chiN.jl")
 export
