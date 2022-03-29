@@ -134,6 +134,7 @@ export
     # not exported but useful functions:
     # ϕ, ϕs, α, αs, molecules, molecule,
     # blocks, block
+    # getparam
 
 include("systems.jl")
 export
@@ -154,6 +155,7 @@ export
     make
 
 include("update.jl")
-# update is not exported because of possible name confilication
+# update! is not exported because of possible name confilication
+# setparam! is an alias of update!
 
 end # module

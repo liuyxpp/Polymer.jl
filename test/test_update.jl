@@ -1,5 +1,5 @@
 using Polymer
-import Polymer: update!, molecule, block_lengths, block_bs
+import Polymer: update!, molecule, block_lengths, block_bs, setparam!, getparam
 
 function starAB3(; fA=0.4, fB1=0.2, fB2=0.2, fB3=0.2)
     sA = KuhnSegment(:A)
@@ -203,6 +203,55 @@ end
     @test block_bs(molecule(2,system)) == [1.1]
     @test Polymer.b(:A, system) == 1.1
     @test Polymer.b(:B, system) == 1.2
+end
+
+@testset "update.jl: AbstractControlParameter" begin
+    system = AB3_A_system()
+    ϕc = ϕControlParameter(2, ϕParam)
+    update!(system, 0.6, ϕc)
+    @test Polymer.ϕ(1, system) == 0.4
+    @test getparam(system, ϕc) == 0.6
+    setparam!(system, 0.3, ϕc)
+    @test Polymer.ϕ(1, system) == 0.7
+    @test getparam(system, ϕc) == 0.3
+
+    system = AB3_A_system()
+    αc = αControlParameter(2, αParam)
+    update!(system, 0.8, αc)
+    @test getparam(system, αc) == 0.8
+
+    system = AB3_A_system()
+    χNc = χNControlParameter(:A, :B, χNParam)
+    update!(system, 12.0, χNc)
+    @test getparam(system, χNc) == 12.0
+
+    system = AB3_A_system()
+    ff(f) = (one(f) - f)/3 * [1, 1, 1]
+    id_mol = molecule_id(:AB3, system)
+    id_block = block_id(:A, molecule(id_mol, system))
+    fc = fControlParameter(id_block, id_mol, fParam, ff)
+    update!(system, 0.4, fc)
+    @test block_lengths(molecule(id_mol, system)) ≈ [0.4, 0.2, 0.2, 0.2]
+
+    system = AB3_A_system()
+    bc = bControlParameter(:A, bParam)
+    update!(system, 1.1, bc)
+    @test getparam(system, bc) == 1.1
+    @test block_b(:A, molecule(:AB3, system)) == 1.1
+    @test block_b(:B1, molecule(:AB3, system)) == 1.0
+    @test block_b(:B2, molecule(:AB3, system)) == 1.0
+    @test block_b(:B3, molecule(:AB3, system)) == 1.0
+    @test block_b(:A, molecule(:A, system)) == 1.1
+
+    system = AB3_A_system()
+    bc = bControlParameter(:B, bParam)
+    update!(system, 1.2, bc)
+    @test getparam(system, bc) == 1.2
+    @test block_b(:A, molecule(:AB3, system)) == 1.0
+    @test block_b(:B1, molecule(:AB3, system)) == 1.2
+    @test block_b(:B2, molecule(:AB3, system)) == 1.2
+    @test block_b(:B3, molecule(:AB3, system)) == 1.2
+    @test block_b(:A, molecule(:A, system)) == 1.0
 end
 
 nothing

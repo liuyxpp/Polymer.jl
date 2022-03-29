@@ -17,6 +17,8 @@ using Polymer
     @test component_id(:AB, model) == 1
     @test component_ids(model) == [1, 2]
 
+    @test Polymer.χN(model, :A, :B) == 20.0
+
     @test Polymer.ϕ(1, model) == 0.5
     @test Polymer.ϕ(:AB, model) == 0.5
     @test Polymer.ϕs(model) == [0.5, 0.5]
@@ -57,6 +59,17 @@ using Polymer
     @test Polymer.b(:A, model) == 1.0
     @test Polymer.b(:B, model) == 1.0
     @test Polymer.bs(model) == [1.0, 1.0]
+
+    ϕc = ϕControlParameter(1, ϕParam)
+    @test Polymer.getparam(model, ϕc) == 0.5
+    αc = αControlParameter(2, αParam)
+    @test Polymer.getparam(model, αc) == 0.5
+    χNc = χNControlParameter(:A, :B, χNParam)
+    @test Polymer.getparam(model, χNc) == 20.0
+    fc = fControlParameter(1, 1, fParam)
+    @test Polymer.getparam(model, fc) == 0.5
+    bc = bControlParameter(:A, bParam)
+    @test Polymer.getparam(model, bc) == 1.0
 
     model = AB_S_system()
     @test component_number_type(model) == BinarySystem()

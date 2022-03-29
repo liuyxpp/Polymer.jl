@@ -148,7 +148,10 @@ struct ϕControlParameter{F<:Function} <: AbstractControlParameter
     func::F
 end
 
-function ϕControlParameter(id, param, func)
+"""
+Default function is for binary system.
+"""
+function ϕControlParameter(id, param, func=(ϕ)->[one(ϕ)-ϕ])
     ϕs = func(0.5)
     (sum(ϕs) + 0.5 == 1.0) || error("func should return a vector with a sum equal to 1 - input argument!")
     return ϕControlParameter(id, param, func)
@@ -184,7 +187,10 @@ struct fControlParameter{F<:Function} <: AbstractControlParameter
     func::F
 end
 
-function fControlParameter(id_block, id_mol, param, func)
+"""
+Default function is for diblock copolymer.
+"""
+function fControlParameter(id_block, id_mol, param, func=(f)->[one(f)-f])
     fs = func(0.5)
     (sum(fs) + 0.5 == 1.0) || error("func should return a vector with a sum equal to 1 - input argument!")
     return fControlParameter(id_block, id_mol, param, func)

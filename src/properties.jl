@@ -121,6 +121,13 @@ end
 
 bs(system) = [b(sp, system) for sp in species(system)]
 
+getparam(system::PolymerSystem, cp::ϕControlParameter) = ϕ(cp.id, system)
+getparam(system::PolymerSystem, cp::αControlParameter) = α(cp.id, system)
+getparam(bcp::BlockCopolymer, cp::fControlParameter) = block_length(cp.id_block, bcp)
+getparam(system::PolymerSystem, cp::fControlParameter) = getparam(molecule(cp.id_mol, system), cp)
+getparam(system::PolymerSystem, cp::χNControlParameter) = χN(system, cp.sp1, cp.sp2)
+getparam(system::PolymerSystem, cp::bControlParameter) = b(cp.sp, system)
+
 """
     ϕ̄(c::Component{SmallMolecule}, sp::Symbol)
     ϕ̄(c::Component{<:BlockCopolymer}, sp::Symbol)

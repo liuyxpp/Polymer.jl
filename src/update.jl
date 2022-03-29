@@ -41,7 +41,7 @@ end
 #################
 
 function update!(system::PolymerSystem, ids::AbstractVector{<:Integer}, ϕs::AbstractVector, ::ϕType)
-    (sum(ϕs) == 1.0) || error("ϕs should have sum 1.0!")
+    isapprox(sum(ϕs), 1.0) || error("ϕs should have sum 1.0!")
 
     nc = ncomponents(system)
     (nc == 1) && return system
@@ -129,7 +129,7 @@ end
 
 function update!(bcp::BlockCopolymer, ids::AbstractVector{<:Integer}, fs::AbstractVector, ::fType)
     nb = nblocks(bcp)
-    (sum(fs) == 1.0) || error("All f in one blockcopolymer must = 1.")
+    isapprox(sum(fs), 1.0) || error("All f in one blockcopolymer must = 1.")
     (nb == length(fs)) || error("Length of fs should be equal to the number of blocks of the block polymer!")
     (nb == length(ids)) || error("Length of ids (or labels) should be equal to the number of blocks of the block polymer!")
 
@@ -283,3 +283,11 @@ function update!(system::PolymerSystem, bs::AbstractVector, ::bType)
 
     return update!(system, species(system), bs, bParam)
 end
+
+update!(system::PolymerSystem, ϕ, cp::ϕControlParameter) = update!(system, cp(ϕ), ϕParam)
+update!(system::PolymerSystem, α, cp::αControlParameter) = update!(system, cp.id, α, αParam)
+update!(system::PolymerSystem, f, cp::fControlParameter) = update!(system, cp.id_mol, cp(f), fParam)
+update!(system::PolymerSystem, χN, cp::χNControlParameter) = update!(system, cp.sp1, cp.sp2, χN, χNParam)
+update!(system::PolymerSystem, b, cp::bControlParameter) = update!(system, cp.sp, b, bParam)
+
+const setparam! = update!
