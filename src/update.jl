@@ -273,3 +273,13 @@ function update!(system::PolymerSystem, sps::AbstractVector, bs::AbstractVector,
     end
     return system
 end
+
+"""
+Update for a full list of b.
+The order of list `bs` should be consistent with the order of `spcices(system)`, i.e. the internal order of the spcies in the BlockCopolymer instance.
+"""
+function update!(system::PolymerSystem, bs::AbstractVector, ::bType)
+    (nspecies(system) == length(bs)) || error("Length of bs must be equal to the number of species in the system!")
+
+    return update!(system, species(system), bs, bParam)
+end

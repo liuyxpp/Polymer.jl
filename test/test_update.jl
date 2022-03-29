@@ -196,6 +196,13 @@ end
     @test block_bs(molecule(2,system)) == [1.1]
     @test Polymer.b(:A, system) == 1.1
     @test Polymer.b(:B, system) == 1.2
+
+    system = AB3_A_system()
+    update!(system, [1.1, 1.2], bParam)
+    @test block_bs(molecule(1,system)) == [1.1, 1.2, 1.2, 1.2]
+    @test block_bs(molecule(2,system)) == [1.1]
+    @test Polymer.b(:A, system) == 1.1
+    @test Polymer.b(:B, system) == 1.2
 end
 
 nothing
