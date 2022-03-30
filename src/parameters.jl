@@ -191,8 +191,8 @@ end
 Default function is for diblock copolymer.
 """
 function fControlParameter(id_block, id_mol, param, func=(f)->[one(f)-f])
-    fs = func(0.5)
-    (sum(fs) + 0.5 == 1.0) || error("func should return a vector with a sum equal to 1 - input argument!")
+    fs = func(0.1)
+    (sum(fs) + 0.1 == 1.0) || error("func should return a vector with a sum equal to 1 - input argument!")
     return fControlParameter(id_block, id_mol, param, func)
 end
 

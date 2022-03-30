@@ -132,6 +132,8 @@ function update!(bcp::BlockCopolymer, ids::AbstractVector{<:Integer}, fs::Abstra
     isapprox(sum(fs), 1.0) || error("All f in one blockcopolymer must = 1.")
     (nb == length(fs)) || error("Length of fs should be equal to the number of blocks of the block polymer!")
     (nb == length(ids)) || error("Length of ids (or labels) should be equal to the number of blocks of the block polymer!")
+    # Homopolymer chain f = 1.0 always
+    (nb == 1) || return bcp
 
     for i in 1:length(fs)
         id = ids[i]
