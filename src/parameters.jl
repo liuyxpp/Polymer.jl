@@ -151,7 +151,7 @@ end
 """
 Default function is for binary system.
 """
-function ϕControlParameter(id, param=ϕParam, func=(ϕ)->[one(ϕ)-ϕ])
+function ϕControlParameter(id, param::ϕType=ϕParam, func=(ϕ)->[one(ϕ)-ϕ])
     ϕs = func(0.5)
     (sum(ϕs) + 0.5 == 1.0) || error("func should return a vector with a sum equal to 1 - input argument!")
     return ϕControlParameter(id, param, func)
@@ -167,7 +167,7 @@ struct αControlParameter <: AbstractControlParameter
     param::αType
 end
 
-αControlParameter(id, param=αParam) = αControlParameter(id, param)
+αControlParameter(id, param::αType=αParam) = αControlParameter(id, param)
 
 (::αControlParameter)(α) = α
 
@@ -180,7 +180,7 @@ struct χNControlParameter <: AbstractControlParameter
     param::χNType
 end
 
-χNControlParameter(sp1, sp2, param=χNParam) = χNControlParameter(sp1, sp2, param)
+χNControlParameter(sp1, sp2, param::χNType=χNParam) = χNControlParameter(sp1, sp2, param)
 
 (::χNControlParameter)(χN) = χN
 
@@ -194,7 +194,7 @@ end
 """
 Default function is for diblock copolymer.
 """
-function fControlParameter(id_block, id_mol, param=fParam, func=(f)->[one(f)-f])
+function fControlParameter(id_block, id_mol, param::fType=fParam, func=(f)->[one(f)-f])
     fs = func(0.1)
     (sum(fs) + 0.1 == 1.0) || error("func should return a vector with a sum equal to 1 - input argument!")
     return fControlParameter(id_block, id_mol, param, func)
@@ -210,6 +210,6 @@ struct bControlParameter <: AbstractControlParameter
     param::bType
 end
 
-bControlParameter(sp, param::bParam) = bControlParameter(sp, param)
+bControlParameter(sp, param::bType=bParam) = bControlParameter(sp, param)
 
 (::bControlParameter)(b) = b
