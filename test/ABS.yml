@@ -1,8 +1,8 @@
 # Configurations for Polymer System
 ---
-System:
+system:
   label           : AB/S
-  Species:
+  species:
     - label : A
       type  : Segment
       b     : 1.0
@@ -19,7 +19,7 @@ System:
     - [A, B, 20.0]
     - [A, S, 80.0]
     - [B, S, 120.0]
-  Components:
+  components:
     - type            : BCP # block copolymer or homopolymer
       label           : AB
       length          : 1.0

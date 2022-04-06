@@ -4,6 +4,7 @@ using LinearAlgebra
 using ArgCheck
 using REPL: symbol_latex
 using LaTeXStrings
+using Configurations
 using YAML
 using Setfield
 
@@ -147,12 +148,24 @@ export
     A_B_S_system,
     A_B_S1_S2_system
 
+include("config.jl")
+export
+    SpecieConfig,
+    BlockConfig,
+    ComponentConfig,
+    PolymerSystemConfig
+
 include("make.jl")
 export
     ObjType
 export
-    load_config,
+    load_config, save_config,
     make
+
+include("serialize.jl")
+export
+    specie_object, specie_objects,
+    to_config, from_config
 
 include("update.jl")
 # update! is not exported because of possible name confilication

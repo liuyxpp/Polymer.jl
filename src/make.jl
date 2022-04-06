@@ -5,7 +5,7 @@ Load configurations which directs creation of a polymer system and its component
 
 The configurations are stored in a nested Dicts.
 """
-load_config(yamlfile) = YAML.load_file(yamlfile)
+# load_config(yamlfile) = YAML.load_file(yamlfile)
 
 """
     ObjType{name}
@@ -121,8 +121,8 @@ Make an `PolymerSystem` object.
 Note: `confinement` is not implmented.
 """
 function make(::ObjType{:System}, config)
-    sps = [make(ObjType{:Specie}(), c) for c in config["Species"]]
-    components = [make(ObjType{:Component}(), c, sps) for c in config["Components"]]
+    sps = [make(ObjType{:Specie}(), c) for c in config["species"]]
+    components = [make(ObjType{:Component}(), c, sps) for c in config["components"]]
     kwargs = Dict()
     if haskey(config, "χN_map")
         χN_map = make(ObjType{:χN_map}(), config["χN_map"])
@@ -135,4 +135,60 @@ function make(::ObjType{:System}, config)
     return PolymerSystem(components, χN_map; kwargs...)
 end
 
-make(config) = make(ObjType{:System}(), config["System"])
+make(config) = make(ObjType{:System}(), config)
+
+function make(config::SpecieConfig)
+    label = config.label
+    kwargs = isnothing(config.M) ? (; b=config.b) : (; b=config.b, M=config.M)
+    (config.type == :Segment) && return KuhnSegment(label; kwargs...)
+    (config.type == :Small) && return SmallMolecule(label; kwargs...)
+    error("Unknown specie type!")
+end
+
+function make(config::BlockConfig, sps)
+    i = findfirst(sp -> sp.label == config.segment, sps)
+    isnothing(i) && error("No specie found for block!")
+
+    label = config.label
+    if isempty(config.ends)
+        E1, E2 = FreeEnd(Symbol(label, 1)), FreeEnd(Symbol(label, 2))
+    elseif length(config.ends) == 1
+        E1, E2 = FreeEnd(label), BranchPoint(config.ends[1])
+    else
+        E1, E2 = BranchPoint(config.ends[1]), BranchPoint(config.ends[2])
+    end
+
+    return PolymerBlock(label, sps[i], config.length, E1, E2)
+end
+
+function make(config::ComponentConfig, sps)
+    (config.type ∈ [:BCP, :SMOL]) || error("Only BCP and SMOL is allowed for molecule type!")
+    (config.type == :BCP && isempty(config.blocks)) && error("At least one block is expected for a block copolymer!")
+
+    if config.type == :SMOL
+        i = findfirst(sp -> sp.label == config.label, sps)
+        isnothing(i) && error("No specie found for small molecule found!")
+        molecule = sps[i]
+    else
+        blocks = make.(config.blocks, Ref(sps))
+        molecule = BlockCopolymer(config.label, blocks)
+    end
+
+    return Component(molecule; α=config.length, ϕ=config.volume_fraction)
+end
+
+function _make_χNmap(config)
+    χN_map = Dict{Set{Symbol}, Float64}()
+    for a in config
+        s1, s2, χN = a
+        χN_map[Set([Symbol(s1), Symbol(s2)])] = χN
+    end
+    return χN_map
+end
+
+function make(config::PolymerSystemConfig)
+    sps = make.(config.species)
+    components = make.(config.components, Ref(sps))
+    χN_map = _make_χNmap(config.χN_map)
+    return PolymerSystem(components, χN_map; C=config.chain_density)
+end
