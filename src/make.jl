@@ -151,7 +151,7 @@ function make(config::BlockConfig, sps)
 
     label = config.label
     if isempty(config.ends)
-        E1, E2 = FreeEnd(Symobl(label, 1)), FreeEnd(Symbol(label, 2))
+        E1, E2 = FreeEnd(Symbol(label, 1)), FreeEnd(Symbol(label, 2))
     elseif length(config.ends) == 1
         E1, E2 = FreeEnd(label), BranchPoint(config.ends[1])
     else

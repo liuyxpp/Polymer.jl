@@ -1,0 +1,49 @@
+label: "AB/S"
+species:
+  - label: A
+    type: Segment
+    b: 1.0
+    M: ~
+  - label: B
+    type: Segment
+    b: 1.0
+    M: ~
+  - label: S
+    type: Small
+    b: 1.0
+    M: ~
+χN_map:
+  -
+    - "A"
+    - "B"
+    - 20.0
+  -
+    - "A"
+    - "S"
+    - 80.0
+  -
+    - "B"
+    - "S"
+    - 120.0
+components:
+  - type: BCP
+    label: AB
+    length: 1.0
+    volume_fraction: 0.1
+    blocks:
+      - label: A
+        segment: A
+        length: 0.5
+        ends:
+          - EB
+      - label: B
+        segment: B
+        length: 0.5
+        ends:
+          - EB
+  - type: SMOL
+    label: S
+    length: 0.01
+    volume_fraction: 0.9
+    blocks: []
+chain_density: 1.0
