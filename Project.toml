@@ -14,7 +14,7 @@ YAML = "ddb6d928-2868-570f-bddf-ab3f9cf99eb6"
 
 [compat]
 ArgCheck = "2.3.0"
-Configurations = ">=0.17.3"
+Configurations = "0.17.3"
 LaTeXStrings = "1.3.0"
 Setfield = "0.8.2"
 YAML = "0.4.7"
