@@ -159,14 +159,13 @@ include("make.jl")
 export
     ObjType
 export
-    load_config,
-    save_config,
+    load_config, save_config,
     make
 
 include("serialize.jl")
 export
     specie_object, specie_objects,
-    to_config
+    to_config, from_config
 
 include("update.jl")
 # update! is not exported because of possible name confilication

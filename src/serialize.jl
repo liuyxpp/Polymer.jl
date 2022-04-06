@@ -47,3 +47,6 @@ function to_config(system::PolymerSystem)
     components = to_config.(system.components)
     return PolymerSystemConfig(species=species, χN_map=χN_map, components=components, chain_density=system.C)
 end
+
+"`from_config` is an alias for `make`"
+const from_config = make
