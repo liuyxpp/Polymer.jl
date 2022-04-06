@@ -4,6 +4,7 @@ using LinearAlgebra
 using ArgCheck
 using REPL: symbol_latex
 using LaTeXStrings
+using Configurations
 using YAML
 using Setfield
 
@@ -146,6 +147,13 @@ export
     AB_S_system,
     A_B_S_system,
     A_B_S1_S2_system
+
+include("config.jl")
+export
+    SpecieConfig,
+    BlockConfig,
+    ComponentConfig,
+    PolymerSystemConfig
 
 include("make.jl")
 export
