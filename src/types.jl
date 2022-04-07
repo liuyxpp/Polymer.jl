@@ -12,8 +12,6 @@ struct SlabConfinement <: ConfinementType end
 struct DiskConfinement <: ConfinementType end
 struct SphereConfinement <: ConfinementType end
 struct CylinderConfinement <: ConfinementType end
-isconfined(::BulkConfinement) = false
-isconfined(::ConfinementType) = true
 
 # traits for the type of polymer system
 abstract type PolymerSystemType end
@@ -33,8 +31,6 @@ abstract type ChargedType end
 struct Neutral <: ChargedType end
 struct SmearedCharge <: ChargedType end
 struct DiscreteCharge <: ChargedType end
-ischarged(::Neutral) = false
-ischarged(::ChargedType) = true
 
 abstract type AbstractSpecie end
 struct KuhnSegment <: AbstractSpecie
@@ -54,8 +50,6 @@ FreeEnd(; label=:EF) = FreeEnd(label)
 struct BranchPoint <: BlockEnd
     label::Symbol
 end
-isfreeblockend(::BlockEnd) = false
-isfreeblockend(::FreeEnd) = true
 
 abstract type AbstractBlock end
 struct PolymerBlock <: AbstractBlock
@@ -97,8 +91,6 @@ struct BlockCopolymer{T<:AbstractBlock} <: AbstractPolymer
         new{T}(label, blocks)
     end
 end
-
-nblocks(bc::BlockCopolymer) = length(bc.blocks)
 
 struct RandomCopolymer <: AbstractPolymer end
 struct AlternatingCopolymer <: AbstractPolymer end

@@ -1,4 +1,9 @@
+isconfined(::BulkConfinement) = false
+isconfined(::ConfinementType) = true
 isconfined(s::PolymerSystem) = isconfined(s.confinement)
+
+ischarged(::Neutral) = false
+ischarged(::ChargedType) = true
 
 χN(s::PolymerSystem, sp1::Symbol, sp2::Symbol) = s.χNmatrix[sp1, sp2]
 χNmap(s::PolymerSystem) = s.χNmatrix.map
@@ -82,6 +87,14 @@ molecule_label(mol::AbstractMolecule) = mol.label
 molecule_ids(s::PolymerSystem) = component_ids(s)
 molecule_id(label::Symbol, s::PolymerSystem) = component_id(label, s)
 molecule_id(mol::AbstractMolecule, s::PolymerSystem) = molecule_id(molecule_label(mol), s)
+
+isfreeblockend(::BlockEnd) = false
+isfreeblockend(::FreeEnd) = true
+
+nblocks(sm::SmallMolecule) = 0
+nblocks(bc::BlockCopolymer) = length(bc.blocks)
+nblocks(c::Component) = nblocks(c.molecule)
+nblocks(s::PolymerSystem) = sum(nblocks.(s.components))
 
 blocks(bcp::BlockCopolymer) = bcp.blocks
 block_labels(bcp::BlockCopolymer) = [b.label for b in bcp.blocks]
