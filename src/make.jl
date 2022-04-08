@@ -192,3 +192,31 @@ function make(config::PolymerSystemConfig)
     χN_map = _make_χNmap(config.χN_map)
     return PolymerSystem(components, χN_map; C=config.chain_density)
 end
+
+function KuhnSegment(config::SpecieConfig)
+    sp = make(config)
+    (sp isa SmallMolecule) && error("Configuration is for SmallMolecule!")
+    return sp
+end
+
+function SmallMolecule(config::SpecieConfig)
+    sp = make(config)
+    (sp isa KuhnSegment) && error("Configuration is for KuhnSegment!")
+    return sp
+end
+
+function BlockCopolymer(config::ComponentConfig, sps)
+    mol = make(config, sps).molecule
+    (mol isa SmallMolecule) && error("Configuration is for SmallMolecule!")
+    return mol
+end
+
+function SmallMolecule(config::ComponentConfig, sps)
+    mol = make(config, sps).molecule
+    (mol isa BlockCopolymer) && error("Configuration is for BlockCopolymer")
+    return mol
+end
+
+PolymerBlock(config::BlockConfig, sps) = make(config, sps)
+Component(config::ComponentConfig, sps) = make(config, sps)
+PolymerSystem(config::PolymerSystemConfig) = make(config)
