@@ -6,6 +6,8 @@
 
 ## Usage
 
+### Construct a `PolymerSystem` object form scratch
+
 ```julia
 julia> using Polymer
 
@@ -45,12 +47,25 @@ julia> homopolymer_chain() # A chain
 julia> AB_A_system() # AB/A polymer blend
 ```
 
-One can also create a polymer system using a nested Dict, which can be written in the format of a YAML file.
+### Serialization and configurations
+
+Based on Configurations.jl, we can serialize a `PolymerSystem` object to a `PolymerSystemConfig` object. Then the `PolymerSystemConfig` object can be saved to a YAML file.
 
 ```julia
-julia> config = load_config("test/ABS.yml")
-julia> ABS = make(config)
+julia> config = to_config(AB_A_system())
+julia> save_config("./AB_A.yml", config)
 ```
+
+We can load the `PolymerSystemConfig` object back from the YAML file. Then we can re-construct the `PolymerSystem` object from the `PolymerSystemConfig` object.
+
+```julia
+julia> config = load_config("./AB_A.yml", PolymerSystemConfig)
+julia> AB_A = make(config)
+# or
+julia> AB_A = PolymerSystem(config)
+```
+
+### Update/Modify a `PolymerSystem` object
 
 Parameters in a parameters can be achieved or updated easily via `update!` or `setparam!` function. There are two kinds of parameter defined by `AbstractParameter` and `AbstractControlParameter`, respectively. The first kind makes lower level setting of parameters possible. However, it is more complicated and the signature of `update!` is less unified. The second kind provides a convenient and unified way to read and write a PolymerSystem instance. However, it only supports update a single value of any parameter. One can use `AbstractControlParameter` to define a parameter which is considered to be an independent variable in a set of simulations or for construction of a phase diagram. Currently, there are 5 concrete types of `AbstractControlParameter`:
 
