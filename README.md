@@ -60,7 +60,7 @@ We can load the `PolymerSystemConfig` object back from the YAML file. Then we ca
 
 ```julia
 julia> config = load_config("./AB_A.yml", PolymerSystemConfig)
-julia> AB_A = make(config)
+julia> AB_A = Polymer.make(config)
 # or
 julia> AB_A = PolymerSystem(config)
 ```
