@@ -26,6 +26,12 @@ struct BinarySystem <: ComponentNumberType end
 struct TernarySystem <: ComponentNumberType end
 struct MultiComponentSystem <: ComponentNumberType end
 
+# traits for multi-species system
+abstract type SpecieNumberType end
+struct SingleSpecieSystem <: SpecieNumberType end
+struct TwoSpeciesSystem <: SpecieNumberType end
+struct MultiSpeciesSystem <: SpecieNumberType end
+
 # traits for the type of charge distribution
 abstract type ChargedType end
 struct Neutral <: ChargedType end

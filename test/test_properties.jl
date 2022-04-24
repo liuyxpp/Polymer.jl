@@ -3,12 +3,14 @@ using Polymer
 @testset "properties.jl" begin
     model = AB_system()
     @test component_number_type(model) == MonoSystem()
+    @test specie_number_type(model) == TwoSpeciesSystem()
     @test Polymer.ϕ̄(model, :A) == 0.5
     @test Polymer.ϕ̄(model, :B) == 0.5
 
     model = AB_A_system()
     bcp = Polymer.molecule(:AB, model)
     @test component_number_type(model) == BinarySystem()
+    @test specie_number_type(model) == TwoSpeciesSystem()
     @test Polymer.ϕ̄(model, :A) == 0.75
     @test Polymer.ϕ̄(model, :B) == 0.25
 
@@ -79,9 +81,11 @@ using Polymer
 
     s3 = A_B_S_system()
     @test component_number_type(s3) == TernarySystem()
+    @test specie_number_type(s3) == MultiSpeciesSystem()
 
     s4 = A_B_S1_S2_system()
     @test component_number_type(s4) == MultiComponentSystem()
+    @test specie_number_type(s4) == MultiSpeciesSystem()
 end
 
 nothing

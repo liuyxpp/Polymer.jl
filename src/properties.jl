@@ -58,6 +58,18 @@ function component_number_type(s::PolymerSystem)
     return t
 end
 
+function specie_number_type(s::PolymerSystem)
+    ns = nspecies(s)
+    if ns == 1
+        t = SingleSpecieSystem()
+    elseif ns == 2
+        t = TwoSpeciesSystem()
+    else
+        t = MultiSpeciesSystem()
+    end
+    return t
+end
+
 component_label(c::Component) = c.molecule.label
 component_labels(s::PolymerSystem) = [component_label(c) for c in s.components]
 

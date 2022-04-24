@@ -74,6 +74,11 @@ export
     TernarySystem,
     MultiComponentSystem
 export
+    SpecieNumberType,
+    SingleSpecieSystem,
+    TwoSpeciesSystem,
+    MultiSpeciesSystem
+export
     SpaceDimension,
     D1, D2, D3
 export
@@ -123,6 +128,7 @@ export
     nblocks,
     systemtype,
     component_number_type,
+    specie_number_type,
     component_label, component_labels,
     component_id, component_ids,
     molecule_id, molecule_ids,
