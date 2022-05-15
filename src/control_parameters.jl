@@ -98,10 +98,23 @@ function fControlParameter(id_block, id_mol, param::fType=fParam,
     return fControlParameter(id_block, id_mol, param, func)
 end
 
-function fControlParameter(id_block::Integer, label::Symbol, s::PolymerSystem; param::fType=fParam, func=(f)->[one(f)-f])
+function fControlParameter(id_block::Integer, label::Symbol, s::PolymerSystem;
+                           param::fType=fParam, func=(f)->[one(f)-f])
     id_mol = molecule_id(label, s)
     @argcheck !isnothing(id_mol) "$label is not a component label!"
-    @argcheck 0 < id_block <= nblocks(molecule(id_mol, s)) "Polymer block #$id_block is not in the label polymer component!"
+    @argcheck 0 < id_block <= nblocks(molecule(id_mol, s)) "Polymer block #$id_block is not in the polymer component!"
+
+    return fControlParameter(id_block, id_mol, param, func)
+end
+
+function fControlParameter(label_block::Symbol, label_mol::Symbol,
+                           s::PolymerSystem;
+                           param::fType=fParam, func=(f)->[one(f)-f])
+    id_mol = molecule_id(label_mol, s)
+    @argcheck !isnothing(id_mol) "$label_mol is not a component label!"
+
+    id_block = block_id(label_block, molecule(id_mol, s))
+    @argcheck !isnothing(id_block) "Polymer block $label_block is not in the polymer component!"
 
     return fControlParameter(id_block, id_mol, param, func)
 end

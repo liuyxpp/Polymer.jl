@@ -23,6 +23,9 @@
     fc2 = fControlParameter(1, :ABC, abc; func=ff)
     @test fc2(0.3) == [0.3, 0.5, 0.2]
 
+    fc3 = fControlParameter(:B, :ABC, abc; func=ff)
+    @test fc3(0.3) == [0.5, 0.3, 0.2]
+
     bc = bControlParameter(:A, bParam)
     @test bc(1.1) == 1.1
 end
