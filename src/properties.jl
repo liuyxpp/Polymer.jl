@@ -137,6 +137,7 @@ block_specie(label::Symbol, bcp::BlockCopolymer) = block_specie(block_id(label, 
 block_bs(bcp::BlockCopolymer) = [b.segment.b for b in bcp.blocks]
 block_b(id::Integer, bcp::BlockCopolymer) = block_bs(bcp)[id]
 block_b(label::Symbol, bcp::BlockCopolymer) = block_b(block_id(label, bcp), bcp)
+block_b(b::PolymerBlock) = b.segment.b
 
 function b(sp::Symbol, system::PolymerSystem)
     (sp ∈ species(system)) || error("$sp is not existing!")
