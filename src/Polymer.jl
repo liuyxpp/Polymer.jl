@@ -46,13 +46,6 @@ export
     as_variable_name,
     as_ascii_label,
     as_plot_label
-export
-    AbstractControlParameter,
-    ϕControlParameter,
-    αControlParameter,
-    fControlParameter,
-    χNControlParameter,
-    bControlParameter
 
 include("chiN.jl")
 export
@@ -117,6 +110,15 @@ export
     AbstractSystem,
     PolymerSystem
 
+include("control_parameters.jl")
+export
+    AbstractControlParameter,
+    ϕControlParameter,
+    αControlParameter,
+    fControlParameter,
+    χNControlParameter,
+    bControlParameter
+
 include("properties.jl")
 export
     isconfined,
@@ -147,8 +149,10 @@ include("systems.jl")
 export
     homopolymer_chain,
     diblock_chain,
+    linearABC,
     solvent,
     AB_system,
+    ABC_system,
     AB_A_system,
     AB_S_system,
     A_B_S_system,
