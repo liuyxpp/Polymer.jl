@@ -1,5 +1,7 @@
-
 ## Convenient functions for creating polymer chains.
+
+branchpoints(n, prefix="EB") = [BranchPoint(Symbol(prefix*string(i))) for i in 1:n]
+freeends(n, prefix="A") = [FreeEnd(Symbol(prefix*string(i))) for i in 1:n]
 
 function homopolymer_chain(; label=:A, segment=KuhnSegment(label))
     labelE1 = Symbol(label, :1)
@@ -17,6 +19,18 @@ function diblock_chain(; labelA=:A, labelB=:B, segmentA=KuhnSegment(labelA), seg
     return BlockCopolymer(labelAB, [A,B])
 end
 
+function linearABC(fA=0.3, fB=0.3)
+    sA = KuhnSegment(:A)
+    sB = KuhnSegment(:B)
+    sC = KuhnSegment(:C)
+    eb = branchpoints(2)
+    fe = freeends(2)
+    A = PolymerBlock(:A, sA, fA, eb[1], fe[1])
+    C = PolymerBlock(:C, sC, 1-fA-fB, eb[2], fe[2])
+    B = PolymerBlock(:B, sB, fB, eb[1], eb[2])
+    return BlockCopolymer(:ABC, [A, B, C])
+end
+
 ## Convenient functions for creating non-polymer components.
 
 solvent(; label=:S) = SmallMolecule(label)
@@ -27,6 +41,17 @@ solvent(; label=:S) = SmallMolecule(label)
 function AB_system(; χN=20.0, fA=0.5)
     polymer = Component(diblock_chain(; fA=fA))
     return PolymerSystem([polymer], Dict(Set([:A, :B])=>χN))
+end
+
+function ABC_system(; χABN=40.0, χACN=40.0, χBCN=40.0, fA=0.3, fB=0.4)
+    polymer = Component(linearABC(fA, fB))
+    return PolymerSystem([polymer],
+                         Dict(
+                             Set([:A,:B])=>χABN,
+                             Set([:A,:C])=>χACN,
+                             Set([:B,:C])=>χBCN
+                             )
+                        )
 end
 
 "AB diblock copolymers / A homopolymers blend."
