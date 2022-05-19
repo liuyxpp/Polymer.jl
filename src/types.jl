@@ -39,12 +39,15 @@ struct SmearedCharge <: ChargedType end
 struct DiscreteCharge <: ChargedType end
 
 abstract type AbstractSpecie end
-struct KuhnSegment <: AbstractSpecie
+struct KuhnSegment{T} <: AbstractSpecie
     label::Symbol
-    b::Real # length
-    M::Real # molecular weight in g/mol
+    b::T # length
+    M::T # molecular weight in g/mol
+
+    KuhnSegment(label::Symbol, b::T, M::T) where T = new{T}(label, b, M)
 end
-KuhnSegment(label; b=1.0, M=1.0) = KuhnSegment(label, b, M)
+
+KuhnSegment(label; b=1.0, M=1.0) = KuhnSegment(Symbol(label), promote(b, M)...)
 
 abstract type BlockEnd end
 
@@ -58,16 +61,20 @@ struct BranchPoint <: BlockEnd
 end
 
 abstract type AbstractBlock end
-struct PolymerBlock <: AbstractBlock
+struct PolymerBlock{T} <: AbstractBlock
     label::Symbol
     segment::KuhnSegment
-    f::Real # = N_b / N, N is the total number of segments in a whole polymer chain
+    f::T # = N_b / N, N is the total number of segments in a whole polymer chain
     E1::BlockEnd
     E2::BlockEnd
 end
 
 function PolymerBlock(; label=:A, specie=:A, f=1.0, E1=FreeEnd(), E2=FreeEnd())
-    return PolymerBlock(label, KuhnSegment(specie), f, E1, E2)
+    return PolymerBlock(Symbol(label), KuhnSegment(specie), f, E1, E2)
+end
+
+function PolymerBlock(segment::KuhnSegment; label=segment.label, f=1.0, E1=FreeEnd(), E2=FreeEnd())
+    return PolymerBlock(Symbol(label), segment, f, E1, E2)
 end
 
 """
