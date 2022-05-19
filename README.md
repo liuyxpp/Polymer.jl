@@ -78,7 +78,7 @@ Parameters in a parameters can be achieved or updated easily via `update!` or `s
 ```julia
 julia> system = AB_A_system()
 # ϕAB = 0.5, ϕA = 0.5
-julia> ϕA = ϕControlParameter(2)  # ϕA is the control parameter
+julia> ϕA = ϕControlParameter(:hA, system)  # ϕA is the control parameter
 julia> update!(system, 0.6, ϕA)  # ϕAB will be updated accordingly due to the conservation of mass.
 # ϕAB = 0.4, ϕA = 0.6
 ```
