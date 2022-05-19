@@ -124,16 +124,16 @@ The key of `χN_map` should be a two-element `Set`. Each element is the unique s
 
 Note: For Edwards Model A (homopolymer + implicit solvent), one has to add a dummy solvent component in the `components` array to make the function `multicomponent` return correct result.
 """
-struct PolymerSystem <: AbstractSystem
-    components::Vector{AbstractComponent}
+struct PolymerSystem{T} <: AbstractSystem
+    components::Vector{Component}
     confinement::ConfinementType
-    χNmatrix::χNMatrix
-    C::Real # = \rho_0 R_g^3 / N, dimensionless chain density
+    χNmatrix::χNMatrix{T}
+    C::T # = \rho_0 R_g^3 / N, dimensionless chain density
 
-    function PolymerSystem(components::Vector{T}, conf, χNmatrix::χNMatrix, C) where {T<:AbstractComponent}
+    function PolymerSystem(components::Vector{S}, conf, χNmatrix::χNMatrix{T}, C) where {S<:AbstractComponent, T}
         @argcheck _isasystem(components)
         @argcheck _isasystem(components, χNmatrix)
-        new(components, conf, χNmatrix, C)
+        new{T}(components, conf, χNmatrix, T(C))
     end
 end
 
