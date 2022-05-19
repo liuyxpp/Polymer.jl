@@ -106,16 +106,18 @@ struct GiantMolecule <: AbstractMolecule end
 
 abstract type AbstractComponent end
 
-struct Component{T<:AbstractMolecule} <: AbstractComponent
+struct Component{T<:AbstractMolecule, S<:Real} <: AbstractComponent
     molecule::T
-    α::Real # N / N_ref, N_ref is the total number of segments in a reference polymer chain
-    ϕ::Real # = n*N/V, number density of this component in the system.
+    α::S # N / N_ref, N_ref is the total number of segments in a reference polymer chain
+    ϕ::S # = n*N/V, number density of this component in the system.
 
-    function Component(molecule::T, α, ϕ) where {T<:AbstractMolecule}
-        new{T}(molecule, α, ϕ)
+    function Component(molecule::T, α::S, ϕ::S) where {T<:AbstractMolecule, S}
+        new{T, S}(molecule, α, ϕ)
     end
 end
-Component(molecule::T; α=1.0, ϕ=1.0) where {T<:AbstractMolecule} = Component(molecule, α, ϕ)
+
+Component(molecule::T; α::S=1.0, ϕ::S=1.0) where {T<:AbstractMolecule, S} = Component(molecule, α, ϕ)
+Component(molecule::T, α=1.0, ϕ=1.0) where {T<:AbstractMolecule} = Component(molecule, promote(α, ϕ)...)
 
 abstract type AbstractSystem end
 
