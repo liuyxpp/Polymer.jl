@@ -79,12 +79,15 @@ end
 
 abstract type AbstractMolecule end
 
-struct SmallMolecule <: AbstractMolecule
+struct SmallMolecule{T} <: AbstractMolecule
     label::Symbol
-    b::Real # length
-    M::Real # molecular weight in g/mol
+    b::T # length
+    M::T # molecular weight in g/mol
+
+    SmallMolecule(label::Symbol, b::T, M::T) where T = new{T}(label, b, M)
 end
-SmallMolecule(label; b=1.0, M=1.0) = SmallMolecule(label, b, M)
+
+SmallMolecule(label; b=1.0, M=1.0) = SmallMolecule(Symbol(label), promote(b, M)...)
 
 abstract type AbstractPolymer <: AbstractMolecule end
 
@@ -116,8 +119,7 @@ struct Component{T<:AbstractMolecule, S<:Real} <: AbstractComponent
     end
 end
 
-Component(molecule::T; α::S=1.0, ϕ::S=1.0) where {T<:AbstractMolecule, S} = Component(molecule, α, ϕ)
-Component(molecule::T, α=1.0, ϕ=1.0) where {T<:AbstractMolecule} = Component(molecule, promote(α, ϕ)...)
+Component(molecule::T; α=1.0, ϕ=1.0) where {T<:AbstractMolecule} = Component(molecule, promote(α, ϕ)...)
 
 abstract type AbstractSystem end
 

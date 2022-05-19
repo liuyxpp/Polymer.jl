@@ -170,7 +170,7 @@ The averaging density (volume fraction) of specie `sp` in a `PolymerSystem` or a
 
 This functionality can be used to compute the enthalpy energy in the Flory-Huggins theory.
 """
-function ϕ̄(c::Component{SmallMolecule}, sp::Symbol)
+function ϕ̄(c::Component{<:SmallMolecule}, sp::Symbol)
     (sp ∈ species(c)) || return 0.0
     return c.ϕ
 end
