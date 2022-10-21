@@ -36,10 +36,10 @@ julia> polymerAB = Component(chainAB; ϕ=0.5)
 julia> polymerA = Component(chainA; ϕ=0.5)
 
 # Create AB/A polymer blend system.
-julia> AB_A = PolymerSystem([polymerAB, polymerA]; χN_map=Dict(Set([:A, :B])=>20.0))
+julia> AB_A = PolymerSystem([polymerAB, polymerA]; χN_map=Dict([:A, :B]=>20.0))
 ```
 
-Convenient functions are also provided to create common polymer chains and systems. For example, above AB chain, A chain, AB/A polymer blend system can be simply created by a single line of code.
+Convenient functions are also provided to create common polymer chains and systems. For example, above AB chain, A chain, AB/A polymer blend system can be simply created by a single line of code, respectively.
 
 ```julia
 julia> diblock_chain() # AB chain
