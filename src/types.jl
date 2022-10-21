@@ -131,6 +131,8 @@ Component(molecule::T; α=1.0, ϕ=1.0) where {T<:AbstractMolecule} = Component(m
 abstract type AbstractSystem end
 
 """
+    PolymerSystem{T} <: AbstractSystem
+
 The key of `χN_map` should be a two-element `Set`. Each element is the unique symbol for a specie. For example, the `χN_map` of an AB diblock copolymer is a `Dict` with one entry `Set([:A, :B]) => χN`.
 
 Note: For Edwards Model A (homopolymer + implicit solvent), one has to add a dummy solvent component in the `components` array to make the function `multicomponent` return correct result.
@@ -148,9 +150,19 @@ struct PolymerSystem{T} <: AbstractSystem
     end
 end
 
-PolymerSystem(components::Vector{T}, χNmatrix::χNMatrix; conf=BulkConfinement(), C=1.0) where {T<:AbstractComponent} = PolymerSystem(components, conf, χNmatrix, C)
+function PolymerSystem(components::Vector{T}, χNmatrix::χNMatrix;
+                    conf=BulkConfinement(), C=1.0) where {T<:AbstractComponent}
+    return PolymerSystem(components, conf, χNmatrix, C)
+end
 
-PolymerSystem(components::Vector{T}, χNmap; conf=BulkConfinement(), C=1.0) where {T<:AbstractComponent} = PolymerSystem(components, χNMatrix(χNmap); conf=conf, C=C)
+"""
+    PolymerSystem(components, χNmap; conf=BulkConfinement(), C=1.0)
+
+Constructor for `PolymerSystem`. `components` is a collection of `Component` objects. `χNmap` is a dictionary of interaction pairs. See [`χNMatrix`](@ref) for how to write a valid `χNmap`.
+"""
+function PolymerSystem(components, χNmap; conf=BulkConfinement(), C=1.0)
+    return PolymerSystem(collect(components), χNMatrix(χNmap); conf=conf, C=C)
+end
 
 """
 Check if the volume fraction of all compnents sums to 1.0.
