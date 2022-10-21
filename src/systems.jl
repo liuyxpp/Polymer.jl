@@ -54,6 +54,13 @@ function ABC_system(; χABN=40.0, χACN=40.0, χBCN=40.0, fA=0.3, fB=0.4)
                         )
 end
 
+"A/B homopolymers binary blend."
+function A_B_system(; χN=20.0, ϕA=0.5, αA=1.0, αB=1.0)
+    polymerA = Component(homopolymer_chain(label=:A), αA, ϕA)
+    polymerB = Component(homopolymer_chain(label=:B), αB, 1-ϕA)
+    return PolymerSystem([polymerA, polymerB], Dict([:A, :B]=>χN))
+end
+
 "AB diblock copolymers / A homopolymers blend."
 function AB_A_system(; χN=20.0, ϕAB=0.5, fA=0.5, α=0.5)
     polymerAB = Component(diblock_chain(; fA=fA), 1.0, ϕAB)

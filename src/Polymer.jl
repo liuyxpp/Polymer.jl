@@ -153,6 +153,7 @@ export
     solvent,
     AB_system,
     ABC_system,
+    A_B_system,
     AB_A_system,
     AB_S_system,
     A_B_S_system,
