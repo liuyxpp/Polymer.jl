@@ -49,6 +49,8 @@ end
 
 KuhnSegment(label; b=1.0, M=1.0) = KuhnSegment(Symbol(label), promote(b, M)...)
 
+Base.show(io::IO, s::KuhnSegment) = print(io, "KuhnSegment $(s.label) with b=$(s.b)")
+
 abstract type BlockEnd end
 
 struct FreeEnd <: BlockEnd
@@ -59,6 +61,9 @@ FreeEnd(; label=:EF) = FreeEnd(label)
 struct BranchPoint <: BlockEnd
     label::Symbol
 end
+
+Base.show(io::IO, fe::FreeEnd) = print(io, "FreeEnd $(fe.label)")
+Base.show(io::IO, bp::BranchPoint) = print(io, "BranchPoint $(bp.label)")
 
 abstract type AbstractBlock end
 struct PolymerBlock{T} <: AbstractBlock
@@ -76,6 +81,8 @@ end
 function PolymerBlock(segment::KuhnSegment; label=segment.label, f=1.0, E1=FreeEnd(), E2=FreeEnd())
     return PolymerBlock(Symbol(label), segment, f, E1, E2)
 end
+
+Base.show(io::IO, b::PolymerBlock) = print(io, "PolymerBlock $(b.label) with f=$(b.f) of specie $(b.segment.label)")
 
 """
 Check if the length of all blocks in a chain sum to 1.0.
@@ -96,6 +103,8 @@ end
 
 SmallMolecule(label; b=1.0, M=1.0) = SmallMolecule(Symbol(label), promote(b, M)...)
 
+Base.show(io::IO, smol::SmallMolecule) = print(io, "SmallMolecule $(smol.label) with b=$(smol.b)")
+
 abstract type AbstractPolymer <: AbstractMolecule end
 
 struct BlockCopolymer{T<:AbstractBlock} <: AbstractPolymer
@@ -105,6 +114,14 @@ struct BlockCopolymer{T<:AbstractBlock} <: AbstractPolymer
     function BlockCopolymer(label, blocks::Vector{T}) where {T<:PolymerBlock}
         @argcheck _isachain(blocks)
         new{T}(label, blocks)
+    end
+end
+
+function Base.show(io::IO, bcp::BlockCopolymer)
+    n = length(bcp.blocks)
+    println(io, "BlockCopolymer $(bcp.label) with $n blocks:")
+    for b in bcp.blocks
+        println(io, "  * $b")
     end
 end
 
@@ -125,6 +142,8 @@ struct Component{T<:AbstractMolecule, S<:Real} <: AbstractComponent
         new{T, S}(molecule, α, ϕ)
     end
 end
+
+Base.show(io::IO, c::Component) = print(io, "Component $(c.molecule.label) with ϕ=$(c.ϕ) and α=$(c.α) contains $(c.molecule)")
 
 Component(molecule::T; α=1.0, ϕ=1.0) where {T<:AbstractMolecule} = Component(molecule, promote(α, ϕ)...)
 
@@ -162,6 +181,19 @@ Constructor for `PolymerSystem`. `components` is a collection of `Component` obj
 """
 function PolymerSystem(components, χNmap; conf=BulkConfinement(), C=1.0)
     return PolymerSystem(collect(components), χNMatrix(χNmap); conf=conf, C=C)
+end
+
+function Base.show(io::IO, s::PolymerSystem)
+    n = length(s.components)
+    name = ""
+    for i in 1:n
+        label = string(s.components[i].molecule.label)
+        name = i < n ? name * label * " + " : name * label
+    end
+    println(io, "PolymerSystem ($name) contains $n components:")
+    for c in s.components
+        print(io, "* $c")
+    end
 end
 
 """
