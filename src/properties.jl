@@ -129,6 +129,7 @@ block(label::Symbol, bcp::BlockCopolymer) = block(block_id(label, bcp), bcp)
 block_lengths(bcp::BlockCopolymer) = [b.f for b in bcp.blocks]
 block_length(id::Integer, bcp::BlockCopolymer) = block_lengths(bcp)[id]
 block_length(label::Symbol, bcp::BlockCopolymer) = block_length(block_id(label, bcp), bcp)
+block_length(b::PolymerBlock) = b.f
 
 block_species(bcp::BlockCopolymer) = [specie(b) for b in bcp.blocks]
 block_specie(id::Integer, bcp::BlockCopolymer) = block_species(bcp)[id]
