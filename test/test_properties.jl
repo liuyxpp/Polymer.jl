@@ -1,4 +1,6 @@
 using Polymer
+using Polymer:
+    label, components, component, blocks, segment, block_ends, molecule
 
 @testset "properties.jl" begin
     model = AB_system()
@@ -86,6 +88,50 @@ using Polymer
     s4 = A_B_S1_S2_system()
     @test component_number_type(s4) == MultiComponentSystem()
     @test specie_number_type(s4) == MultiSpeciesSystem()
+end
+
+@testset "properties.jl: label" begin
+    model = AB_A_system()
+    cs = components(model)
+    @test label.(cs) == component_labels(model)
+    c1 = first(cs)
+    @test label(c1) == :AB
+    @test label(c1) == component_label(c1)
+    AB = molecule(c1)
+    @test label(AB) == :AB
+    b1 = first(blocks(AB))
+    @test label(b1) == :A
+    s1 = segment(b1)
+    @test label(s1) == :A
+    e1 = first(block_ends(b1))
+    @test label(e1) == :A
+
+    @test label.(blocks(AB)) == block_labels(AB)
+    @test label(1, model) == :AB
+    @test isnothing(label(3, model))
+
+    @test label(1, AB) == :A
+    @test isnothing(label(0, AB))
+end
+
+@testset "properties.jl: specie, species" begin
+    model = AB_S_system()
+    @test species(model) == [:A, :B, :S]
+    cs = components(model)
+    c1 = first(cs)
+    c2 = last(cs)
+    @test species(c1) == [:A, :B]
+    @test species(c2) == [:S]
+    AB = molecule(c1)
+    S = molecule(c2)
+    @test species(AB) == [:A, :B]
+    @test species(S) == [:S]
+    bA = first(blocks(AB))
+    bB = last(blocks(AB))
+    @test specie(bA) == :A
+    @test specie(bB) == :B
+    @test specie(S) == :S
+    @test isempty(blocks(S))
 end
 
 nothing
