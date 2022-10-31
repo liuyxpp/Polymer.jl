@@ -84,6 +84,14 @@ end
 
 Base.show(io::IO, b::PolymerBlock) = print(io, "PolymerBlock $(b.label) with f=$(b.f) of specie $(b.segment.label)")
 
+function Base.show(io::IO, ::MIME"text/plain", b::PolymerBlock)
+    f = round(b.f, digits=4)
+    println(io, "PolymerBlock $(b.label) with f=$f of $(b.segment)")
+    println(io, "    Chain ends:")
+    println(io, "      * ", b.E1)
+    print(io, "      * ", b.E2)
+end
+
 """
 Check if the length of all blocks in a chain sum to 1.0.
 """
@@ -125,6 +133,16 @@ function Base.show(io::IO, bcp::BlockCopolymer)
     end
 end
 
+function Base.show(io::IO, ::MIME"text/plain", bcp::BlockCopolymer)
+    n = length(bcp.blocks)
+    println(io, "BlockCopolymer $(bcp.label) with $n blocks:")
+    for b in bcp.blocks
+        print(io, "  * ")
+        show(io, "text/plain", b)
+        println(io)
+    end
+end
+
 struct RandomCopolymer <: AbstractPolymer end
 struct AlternatingCopolymer <: AbstractPolymer end
 
@@ -143,7 +161,16 @@ struct Component{T<:AbstractMolecule, S<:Real} <: AbstractComponent
     end
 end
 
-Base.show(io::IO, c::Component) = print(io, "Component $(c.molecule.label) with ϕ=$(c.ϕ) and α=$(c.α) contains $(c.molecule)")
+## Do not define `Base.show` for `Component` object to avoid disable tree view functionality of Pluto.jl.
+
+# Base.show(io::IO, c::Component) = print(io, "Component $(c.molecule.label) with ϕ=$(c.ϕ) and α=$(c.α) contains $(c.molecule)")
+
+# function Base.show(io::IO, ::MIME"text/plain", c::Component)
+#     println(io, "Polymer system component $(c.molecule.label):")
+#     print(io, "* ", c.molecule)
+#     println(io, "* ϕ = $(c.ϕ)")
+#     println(io, "* α = $(c.α)")
+# end
 
 Component(molecule::T; α=1.0, ϕ=1.0) where {T<:AbstractMolecule} = Component(molecule, promote(α, ϕ)...)
 
@@ -183,7 +210,10 @@ function PolymerSystem(components, χNmap; conf=BulkConfinement(), C=1.0)
     return PolymerSystem(collect(components), χNMatrix(χNmap); conf=conf, C=C)
 end
 
-function Base.show(io::IO, s::PolymerSystem)
+## Here, we define a `Base.print` instead of a `Base.show` to show `PolymerSystem`. If we define `Base.show` for `PolymerSystem`, then the tree view of this object will be disabled and fall back to this `Base.show`.
+# This a compromise to show `PoymerSystem` object in their best representation in both REPL and Pluto.jl.
+# To get a clean plain text display of `PolymerSystem`, use `print(system)` where `system` is a `PolymerSystem` object.
+function Base.print(io::IO, s::PolymerSystem)
     n = length(s.components)
     name = ""
     for i in 1:n
@@ -191,9 +221,13 @@ function Base.show(io::IO, s::PolymerSystem)
         name = i < n ? name * label * " + " : name * label
     end
     println(io, "PolymerSystem ($name) contains $n components:")
+    println(io)
     for c in s.components
-        print(io, "* $c")
+        print(io, "Component $(c.molecule.label) with ϕ=$(c.ϕ) and α=$(c.α) contains ")
+        println(io, c.molecule)
     end
+    println(io)
+    print(io, "with ", s.χNmatrix)
 end
 
 """

@@ -122,3 +122,21 @@ end
 Base.eltype(::χNMatrix{T}) where T = T
 
 Base.showarg(io::IO, A::χNMatrix, toplevel) = print(io, typeof(A), " of species: ", _species(A.map))
+
+function Base.show(io::IO, m::χNMatrix)
+    println(io, "Flory-Huggins interaction parameters betwen species:")
+    for (k, v) in m.map
+        sp1, sp2 = k
+        println(io, "    ($sp1, $sp2) => $v")
+    end
+end
+
+function Base.show(io::IO, ::MIME"text/plain", m::χNMatrix)
+    println(io, "Flory-Huggins interaction parameters between species:")
+    for (k, v) in m.map
+        sp1, sp2 = k
+        println(io, "    ($sp1, $sp2) => $v")
+    end
+    println(io, "as a matrix:")
+    show(io, "text/plain", m.mat)
+end
