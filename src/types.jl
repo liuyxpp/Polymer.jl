@@ -119,7 +119,7 @@ struct BlockCopolymer{T<:AbstractBlock} <: AbstractPolymer
     label::Symbol
     blocks::Vector{T}
 
-    function BlockCopolymer(label, blocks::Vector{T}) where {T<:PolymerBlock}
+    function BlockCopolymer(label::Symbol, blocks::Vector{T}) where {T<:PolymerBlock}
         @argcheck _isachain(blocks)
         new{T}(label, blocks)
     end

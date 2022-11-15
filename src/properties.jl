@@ -176,7 +176,6 @@ block_species(bcp::BlockCopolymer) = [specie(b) for b in bcp.blocks]
 block_species(::SmallMolecule) = []
 block_species(c::Component) = block_species(c.molecule)
 species(m::AbstractMolecule) = block_species(m)
-species(c::Component) = species(molecule(c))
 block_specie(id::Integer, bcp::BlockCopolymer) = block_species(bcp)[id]
 block_specie(label::Symbol, bcp::BlockCopolymer) = block_specie(block_id(label, bcp), bcp)
 
