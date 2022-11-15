@@ -1,17 +1,3 @@
-specie_object(m::SmallMolecule) = m
-specie_object(b::PolymerBlock) = b.segment
-
-specie_objects(bcp::BlockCopolymer) = specie_object.(bcp.blocks) |> unique
-specie_objects(m::SmallMolecule) = [m]
-specie_objects(c::Component) = specie_objects(c.molecule)
-function specie_objects(s::PolymerSystem)
-    species = Any[]
-    for c in s.components
-        append!(species, specie_objects(c))
-    end
-    return unique(species)
-end
-
 function to_config(sp::KuhnSegment)
     return SpecieConfig(label=sp.label, type=:Segment, b=sp.b, M=sp.M)
 end
@@ -28,8 +14,9 @@ function to_config(b::PolymerBlock)
 end
 
 function to_config(bcp::BlockCopolymer)
+    sps = to_config.(specie_objects(bcp))
     bs = to_config.(blocks(bcp))
-    return BlockCopolymerConfig(label=label(bcp), blocks=bs)
+    return BlockCopolymerConfig(label=label(bcp), species=sps, blocks=bs)
 end
 
 function to_config(c::Component)

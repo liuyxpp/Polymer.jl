@@ -15,6 +15,7 @@ end
 
 @option struct BlockCopolymerConfig
     label::Symbol=:BCP
+    species::Vector{SpecieConfig}=SpecieConfig[]
     blocks::Vector{BlockConfig}=BlockConfig[]
 end
 

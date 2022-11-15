@@ -1,3 +1,5 @@
+using Random: randstring
+
 """
     load_config(yamlfile)
 
@@ -27,10 +29,10 @@ struct ObjType{name} end
 
 function make(::ObjType{:BlockEnd}, config)
     if isempty(config)
-        return FreeEnd(), FreeEnd()
+        return FreeEnd(Symbol(randstring(3))), FreeEnd(Symbol(randstring(3)))
     end
     if length(config) == 1
-        return FreeEnd(), BranchPoint(Symbol(config[1]))
+        return FreeEnd(Symbol(randstring(3))), BranchPoint(Symbol(config[1]))
     end
     e1, e2 = Symbol.(config)
     return BranchPoint(e1), BranchPoint(e2)
@@ -151,9 +153,9 @@ function make(config::BlockConfig, sps)
 
     label = config.label
     if isempty(config.ends)
-        E1, E2 = FreeEnd(Symbol(label, 1)), FreeEnd(Symbol(label, 2))
+        E1, E2 = FreeEnd(Symbol(randstring(3))), FreeEnd(Symbol(randstring(3)))
     elseif length(config.ends) == 1
-        E1, E2 = FreeEnd(label), BranchPoint(config.ends[1])
+        E1, E2 = FreeEnd(Symbol(randstring(3))), BranchPoint(config.ends[1])
     else
         E1, E2 = BranchPoint(config.ends[1]), BranchPoint(config.ends[2])
     end
@@ -209,6 +211,12 @@ function BlockCopolymer(config::ComponentConfig, sps)
     mol = make(config, sps).molecule
     (mol isa SmallMolecule) && error("Configuration is for SmallMolecule!")
     return mol
+end
+
+function BlockCopolymer(config::BlockCopolymerConfig)
+    sps = make.(config.species)
+    blocks = make.(config.blocks, Ref(sps))
+    return BlockCopolymer(config.label, blocks)
 end
 
 function SmallMolecule(config::ComponentConfig, sps)

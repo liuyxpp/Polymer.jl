@@ -1,3 +1,17 @@
+specie_object(m::SmallMolecule) = m
+specie_object(b::PolymerBlock) = b.segment
+
+specie_objects(bcp::BlockCopolymer) = specie_object.(bcp.blocks) |> unique
+specie_objects(m::SmallMolecule) = [m]
+specie_objects(c::Component) = specie_objects(c.molecule)
+function specie_objects(s::PolymerSystem)
+    species = Any[]
+    for c in s.components
+        append!(species, specie_objects(c))
+    end
+    return unique(species)
+end
+
 isconfined(::BulkConfinement) = false
 isconfined(::ConfinementType) = true
 isconfined(s::PolymerSystem) = isconfined(s.confinement)
