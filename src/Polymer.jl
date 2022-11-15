@@ -166,6 +166,7 @@ include("config.jl")
 export
     SpecieConfig,
     BlockConfig,
+    BlockCopolymerConfig,
     ComponentConfig,
     PolymerSystemConfig
 

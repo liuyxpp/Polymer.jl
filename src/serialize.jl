@@ -27,6 +27,11 @@ function to_config(b::PolymerBlock)
     return BlockConfig(label=b.label, segment=specie(b), length=b.f, ends=ends)
 end
 
+function to_config(bcp::BlockCopolymer)
+    bs = to_config.(blocks(bcp))
+    return BlockCopolymerConfig(label=label(bcp), blocks=bs)
+end
+
 function to_config(c::Component)
     type = c.molecule isa BlockCopolymer ? :BCP : :SMOL
     blocks = type == :BCP ? to_config.(c.molecule.blocks) : BlockConfig[]

@@ -13,6 +13,11 @@ end
     ends::Vector{Symbol}=[:AB]
 end
 
+@option struct BlockCopolymerConfig
+    label::Symbol=:BCP
+    blocks::Vector{BlockConfig}=BlockConfig[]
+end
+
 @option struct ComponentConfig
     "Can be: :BCP, :SMOL"
     type::Symbol=:BCP
@@ -33,6 +38,7 @@ end
 Configurations.from_dict(::Type{SpecieConfig}, ::Type{Symbol}, s) = Symbol(s)
 Configurations.from_dict(::Type{ComponentConfig}, ::Type{Symbol}, s) = Symbol(s)
 Configurations.from_dict(::Type{BlockConfig}, ::Type{Symbol}, s) = Symbol(s)
+Configurations.from_dict(::Type{BlockCopolymerConfig}, ::Type{Symbol}, s) = Symbol(s)
 
 "`top` is the key of the top level of the config in the yaml."
 function load_config(yamlfile, T=PolymerSystemConfig; top=nothing)
