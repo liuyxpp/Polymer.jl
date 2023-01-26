@@ -186,4 +186,20 @@ include("update.jl")
 # update! is not exported because of possible name confilication
 # setparam! is an alias of update!
 
+import SnoopPrecompile
+
+SnoopPrecompile.@precompile_all_calls begin
+    system = AB_A_system()
+    ϕAc = ϕControlParameter(:hA, system)
+    fc = fControlParameter(:B, :AB, system)
+    αc = αControlParameter(:AB, system)
+    χNc = χNControlParameter(:A, :B, system)
+    bc = bControlParameter(:A, bParam)
+    update!(system, 0.6, ϕAc)
+    update!(system, 0.2, fc)
+    update!(system, 0.3, αc)
+    update!(system, 2.0, χNc)
+    update!(system, 0.5, bc)
+end
+
 end # module
