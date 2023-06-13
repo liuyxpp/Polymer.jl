@@ -93,10 +93,16 @@ function Base.show(io::IO, ::MIME"text/plain", b::PolymerBlock)
 end
 
 """
-Check if the length of all blocks in a chain sum to 1.0.
+- Check whether each block has a unqiue label.
+- Check whether the length of all blocks in a chain sum to 1.0.
 """
 function _isachain(blocks)
-    mapreduce(x->x.f, +, blocks) ≈ 1.0 ? true : false
+    labels = map(x->x.label, blocks)
+    length(unique(labels)) == length(labels) || return false
+
+    mapreduce(x->x.f, +, blocks) ≈ 1.0 || return false
+
+    return true
 end
 
 abstract type AbstractMolecule end
