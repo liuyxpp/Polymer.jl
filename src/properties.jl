@@ -160,7 +160,10 @@ blocks(bcp::BlockCopolymer) = bcp.blocks
 blocks(::SmallMolecule) = []
 blocks(c::Component) = blocks(c.molecule)
 
+block_labels(sm::SmallMolecule) = [label(sm)]
 block_labels(bcp::BlockCopolymer) = [b.label for b in bcp.blocks]
+block_labels(c::Component) = block_labels(molecule(c))
+block_labels(label::Symbol, s::PolymerSystem) = block_labels(molecule(label, s))
 block_label(b::AbstractBlock) = b.label
 block_ids(bcp::BlockCopolymer) = collect(1:nblocks(bcp))
 block_id(label::Symbol, bcp::BlockCopolymer) = findfirst(block_labels(bcp) .== label)
