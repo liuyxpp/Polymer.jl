@@ -47,22 +47,18 @@ julia> homopolymer_chain() # A chain
 julia> AB_A_system() # AB/A polymer blend
 ```
 
-### Serialization and configurations
-
-Based on Configurations.jl, we can serialize a `PolymerSystem` object to a `PolymerSystemConfig` object. Then the `PolymerSystemConfig` object can be saved to a YAML file.
+### Properties
 
 ```julia
-julia> config = to_config(AB_A_system())
-julia> save_config("./AB_A.yml", config)
+julia> abc = linear_ABC()
+julia> Polymer.block_labels(abc) # get block labels
+julia> ab_a = AB_A_system()
+julia> Polymer.block_labels(:AB, ab_a) # get block labels of a specific component
 ```
 
-We can load the `PolymerSystemConfig` object back from the YAML file. Then we can re-construct the `PolymerSystem` object from the `PolymerSystemConfig` object.
-
+Available properties are listed below:
 ```julia
-julia> config = load_config("./AB_A.yml", PolymerSystemConfig)
-julia> AB_A = Polymer.make(config)
-# or
-julia> AB_A = PolymerSystem(config)
+specie_object, specie_objects, isconfined, ischarged, χN, χNmap, χNmatrix, multicomponent, ncomponents, specie, species, nspecies, systemtype, component_number_type, specie_number_type, label, name, components, component, component_label, component_id, ϕs, ϕ, α, αs, molecules, molecule, molecule_label, molecule_id, molecule_labels, molecule_ids, isfreeblockend, block_ends, segment, nblocks, blocks, block_label, block_labels, block_id, block_ids, block_lengths, block_length, block_specie, block_bs, block_b, b, bs, getparam, ϕ̄
 ```
 
 ### Update/Modify a `PolymerSystem` object
@@ -84,6 +80,24 @@ julia> update!(system, 0.6, ϕA)  # ϕAB will be updated accordingly due to the 
 ```
 
 For more details, consult the testing codes reside in `test` folder.
+
+### Serialization and configurations
+
+Based on Configurations.jl, we can serialize a `PolymerSystem` object to a `PolymerSystemConfig` object. Then the `PolymerSystemConfig` object can be saved to a YAML file.
+
+```julia
+julia> config = to_config(AB_A_system())
+julia> save_config("./AB_A.yml", config)
+```
+
+We can load the `PolymerSystemConfig` object back from the YAML file. Then we can re-construct the `PolymerSystem` object from the `PolymerSystemConfig` object.
+
+```julia
+julia> config = load_config("./AB_A.yml", PolymerSystemConfig)
+julia> AB_A = Polymer.make(config)
+# or
+julia> AB_A = PolymerSystem(config)
+```
 
 ## Contribute
 
