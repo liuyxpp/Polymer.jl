@@ -100,7 +100,6 @@ export
     SmallMolecule,
     AbstractPolymer,
     BlockCopolymer,
-    sub_BlockCopolymer,
     RandomCopolymer,
     AlternatingCopolymer,
     Particle,
