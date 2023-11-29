@@ -129,6 +129,11 @@ struct BlockCopolymer{T<:AbstractBlock} <: AbstractPolymer
         @argcheck _isachain(blocks)
         new{T}(label, blocks)
     end
+
+    function sub_BlockCopolymer(label::Symbol, blocks::Vector{T}) where {T<:PolymerBlock}
+        new{T}(label, blocks)
+    end
+
 end
 
 function Base.show(io::IO, bcp::BlockCopolymer)
