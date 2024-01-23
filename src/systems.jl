@@ -78,6 +78,14 @@ function AB_A_B_system(; χN=20.0, ϕAB=0.5, fA=0.5, ϕA=0.1, αA=0.5, αB=0.5)
                          Dict(Set([:A, :B])=>χN))
 end
 
+function A_B_AB_system(; χN=20.0, fA=0.5, ϕA=0.2, αA=0.5, ϕB=0.2, αB=0.5)
+    polymerAB = Component(diblock_chain(; fA=fA), 1.0, 1-ϕA-ϕB)
+    polymerA = Component(homopolymer_chain(; label=:hA, segment=KuhnSegment(:A)), αA, ϕA)
+    polymerB = Component(homopolymer_chain(; label=:hB, segment=KuhnSegment(:B)), αB, ϕB)
+    return PolymerSystem([polymerA, polymerB, polymerAB],
+                         Dict(Set([:A, :B])=>χN))
+end
+
 "AB diblock copolymers + solvent solution."
 function AB_S_system(; χNAB=20.0, χNAS=100.0, χNBS=100.0, ϕAB=0.1, fA=0.5, α=0.01)
     polymer = Component(diblock_chain(; fA=fA), 1.0, ϕAB)
