@@ -50,7 +50,9 @@ end
 function χNMatrix(map::Dict{Set{Symbol}, T}) where T<:Real
     mat = _χNmap_to_matrix(map)
     imat = inv(mat)
-    return χNMatrix(map, mat, imat)
+    e1 = first(imat)
+    mapnew = Dict(keys(map) .=> [promote(v, e1)[1] for v in values(map)])
+    return χNMatrix(mapnew, promote(mat, imat)...)
 end
 
 """
