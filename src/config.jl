@@ -41,13 +41,36 @@ Configurations.from_dict(::Type{ComponentConfig}, ::Type{Symbol}, s) = Symbol(s)
 Configurations.from_dict(::Type{BlockConfig}, ::Type{Symbol}, s) = Symbol(s)
 Configurations.from_dict(::Type{BlockCopolymerConfig}, ::Type{Symbol}, s) = Symbol(s)
 
-"`top` is the key of the top level of the config in the yaml."
+"""
+    load_config(yamlfile, T=PolymerSystemConfig; top=nothing)
+
+Load a config of type `T` from a YAML file.
+
+# Arguments
+
+- `yamlfile::String`: The path to the yaml file.
+- `T::Type`: The type of the config to be loaded.
+
+# Keyword Arguments
+
+- `top` is the key of the top level of the config in the yaml. If `top` is `nothing`, the whole yaml file will be loaded. Otherwise, only the part under the key `top` will be loaded.
+"""
 function load_config(yamlfile, T=PolymerSystemConfig; top=nothing)
     d = YAML.load_file(yamlfile; dicttype=Dict{String, Any})
     d = isnothing(top) ? d : d[top]
     return from_dict(T, d)
 end
 
+"""
+    save_config(yamlfile, config)
+
+Save a config to a YAML file.
+
+# Arguments
+
+- `yamlfile::String`: The path to the yaml file.
+- `config`: The config to be saved.
+"""
 function save_config(yamlfile, config)
     d = to_dict(config, YAMLStyle)
     return YAML.write_file(yamlfile, d)
