@@ -69,6 +69,14 @@ function AB_A_system(; χN=20.0, ϕAB=0.5, fA=0.5, α=0.5)
                          Dict(Set([:A, :B])=>χN))
 end
 
+"AB diblock copolymers / A homopolymers blend."
+function A_AB_system(; χN=20.0, ϕAB=0.5, fA=0.5, α=0.5)
+    polymerAB = Component(diblock_chain(; fA=fA), 1.0, ϕAB)
+    polymerA = Component(homopolymer_chain(; label=:hA, segment=KuhnSegment(:A)), α, 1-ϕAB)
+    return PolymerSystem([polymerA, polymerAB],
+                         Dict(Set([:A, :B])=>χN))
+end
+
 "AB diblock copolymers / A homopolymers / B homopolymers blend."
 function AB_A_B_system(; χN=20.0, ϕAB=0.5, fA=0.5, ϕA=0.1, αA=0.5, αB=0.5)
     polymerAB = Component(diblock_chain(; fA=fA), 1.0, ϕAB)
