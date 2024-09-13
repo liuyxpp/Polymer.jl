@@ -40,16 +40,16 @@ solvent(; label=:S) = SmallMolecule(label)
 "Default AB diblock copolymer system: two species are A and B, lengths of both segmeents are 1.0. However, χN and fA can be changed by Keyword argument. Default values are: χN=20.0 and fA=0.5."
 function AB_system(; χN=20.0, fA=0.5)
     polymer = Component(diblock_chain(; fA=fA))
-    return PolymerSystem([polymer], Dict(Set([:A, :B])=>χN))
+    return PolymerSystem([polymer], Dict((:A, :B)=>χN))
 end
 
 function ABC_system(; χABN=40.0, χACN=40.0, χBCN=40.0, fA=0.3, fB=0.4)
     polymer = Component(linearABC(fA, fB))
     return PolymerSystem([polymer],
                          Dict(
-                             Set([:A,:B])=>χABN,
-                             Set([:A,:C])=>χACN,
-                             Set([:B,:C])=>χBCN
+                             (:A, :B)=>χABN,
+                             (:A, :C)=>χACN,
+                             (:B, :C)=>χBCN
                              )
                         )
 end
@@ -58,23 +58,21 @@ end
 function A_B_system(; χN=20.0, ϕA=0.5, αA=1.0, αB=1.0)
     polymerA = Component(homopolymer_chain(label=:A), αA, ϕA)
     polymerB = Component(homopolymer_chain(label=:B), αB, 1-ϕA)
-    return PolymerSystem([polymerA, polymerB], Dict([:A, :B]=>χN))
+    return PolymerSystem([polymerA, polymerB], Dict((:A, :B)=>χN))
 end
 
 "AB diblock copolymers / A homopolymers blend."
 function AB_A_system(; χN=20.0, ϕAB=0.5, fA=0.5, α=0.5)
     polymerAB = Component(diblock_chain(; fA=fA), 1.0, ϕAB)
     polymerA = Component(homopolymer_chain(; label=:hA, segment=KuhnSegment(:A)), α, 1-ϕAB)
-    return PolymerSystem([polymerAB, polymerA],
-                         Dict(Set([:A, :B])=>χN))
+    return PolymerSystem([polymerAB, polymerA], Dict((:A, :B)=>χN))
 end
 
 "AB diblock copolymers / A homopolymers blend."
 function A_AB_system(; χN=20.0, ϕAB=0.5, fA=0.5, α=0.5)
     polymerAB = Component(diblock_chain(; fA=fA), 1.0, ϕAB)
     polymerA = Component(homopolymer_chain(; label=:hA, segment=KuhnSegment(:A)), α, 1-ϕAB)
-    return PolymerSystem([polymerA, polymerAB],
-                         Dict(Set([:A, :B])=>χN))
+    return PolymerSystem([polymerA, polymerAB], Dict((:A, :B)=>χN))
 end
 
 "AB diblock copolymers / A homopolymers / B homopolymers blend."
@@ -83,7 +81,7 @@ function AB_A_B_system(; χN=20.0, ϕAB=0.5, fA=0.5, ϕA=0.1, αA=0.5, αB=0.5)
     polymerA = Component(homopolymer_chain(; label=:hA, segment=KuhnSegment(:A)), αA, ϕA)
     polymerB = Component(homopolymer_chain(; label=:hB, segment=KuhnSegment(:B)), αB, 1-ϕAB-ϕA)
     return PolymerSystem([polymerAB, polymerA, polymerB],
-                         Dict(Set([:A, :B])=>χN))
+                         Dict((:A, :B)=>χN))
 end
 
 function A_B_AB_system(; χN=20.0, fA=0.5, ϕA=0.2, αA=0.5, ϕB=0.2, αB=0.5)
@@ -91,7 +89,7 @@ function A_B_AB_system(; χN=20.0, fA=0.5, ϕA=0.2, αA=0.5, ϕB=0.2, αB=0.5)
     polymerA = Component(homopolymer_chain(; label=:hA, segment=KuhnSegment(:A)), αA, ϕA)
     polymerB = Component(homopolymer_chain(; label=:hB, segment=KuhnSegment(:B)), αB, ϕB)
     return PolymerSystem([polymerA, polymerB, polymerAB],
-                         Dict(Set([:A, :B])=>χN))
+                         Dict((:A, :B)=>χN))
 end
 
 "AB diblock copolymers + solvent solution."
@@ -100,9 +98,9 @@ function AB_S_system(; χNAB=20.0, χNAS=100.0, χNBS=100.0, ϕAB=0.1, fA=0.5, �
     sol = Component(solvent(), α, 1-ϕAB)
     return PolymerSystem([polymer, sol],
                          Dict(
-                             Set([:A,:B])=>χNAB,
-                             Set([:A,:S])=>χNAS,
-                             Set([:B,:S])=>χNBS
+                             (:A,:B)=>χNAB,
+                             (:A,:S)=>χNAS,
+                             (:B,:S)=>χNBS
                              )
                         )
 end
@@ -114,9 +112,9 @@ function A_B_S_system(; χNAB=20.0, χNAS=100.0, χNBS=100.0, ϕA=0.1, ϕB=0.1, 
     sol = Component(solvent(), αS, one(ϕA)-ϕA-ϕB)
     return PolymerSystem([polymerA, polymerB, sol],
                          Dict(
-                             Set([:A,:B])=>χNAB,
-                             Set([:A,:S])=>χNAS,
-                             Set([:B,:S])=>χNBS
+                             (:A,:B)=>χNAB,
+                             (:A,:S)=>χNAS,
+                             (:B,:S)=>χNBS
                              )
                         )
 end
@@ -129,12 +127,12 @@ function A_B_S1_S2_system(; χNAB=20.0, χNAS1=100.0, χNBS1=100.0, χNAS2=100.0
     S2 = Component(solvent(label=:S2), αS2, one(ϕA)-ϕA-ϕB-ϕS1)
     return PolymerSystem([polymerA, polymerB, S1, S2],
                          Dict(
-                             Set([:A,:B])=>χNAB,
-                             Set([:A,:S1])=>χNAS1,
-                             Set([:B,:S1])=>χNBS1,
-                             Set([:A,:S2])=>χNAS2,
-                             Set([:B,:S2])=>χNBS2,
-                             Set([:S1,:S2])=>χNS1S2
+                             (:A,:B)=>χNAB,
+                             (:A,:S1)=>χNAS1,
+                             (:B,:S1)=>χNBS1,
+                             (:A,:S2)=>χNAS2,
+                             (:B,:S2)=>χNBS2,
+                             (:S1,:S2)=>χNS1S2
                              )
                         )
 end
