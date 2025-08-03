@@ -1,5 +1,6 @@
 function to_config(sp::KuhnSegment)
-    return SpecieConfig(label=sp.label, type=:Segment, b=sp.b, M=sp.M)
+    κs = isempty(sp.κs) ? nothing : sp.κs
+    return SpecieConfig(label=sp.label, type=:Segment, b=sp.b, M=sp.M, κs=κs)
 end
 
 function to_config(sp::SmallMolecule)

@@ -4,14 +4,17 @@ species:
     type: Segment
     b: 1.0
     M: ~
+    κs: ~
   - label: B
     type: Segment
     b: 1.0
     M: ~
+    κs: ~
   - label: S
     type: Small
     b: 1.0
     M: ~
+    κs: ~
 χN_map:
   -
     - "A"

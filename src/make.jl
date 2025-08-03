@@ -93,6 +93,14 @@ function make(::ObjType{:Specie}, config)
     if haskey(config, "M") && !isnothing(config["M"])
         kwargs[:M] = config["M"]
     end
+    if haskey(config, "κs") && !isnothing(config["κs"])
+        κs = config["κs"]
+        if isa(κs, Vector)
+            kwargs[:κs] = κs
+        else
+            error("Expected κs to be a Vector{Float64}, got $(typeof(κs))")
+        end
+    end
     if haskey(config, "type")
         t = config["type"]
     else
@@ -142,6 +150,7 @@ make(config) = make(ObjType{:System}(), config)
 function make(config::SpecieConfig)
     label = config.label
     kwargs = isnothing(config.M) ? (; b=config.b) : (; b=config.b, M=config.M)
+    kwargs = isnothing(config.κs) ? kwargs : (; kwargs..., κs=config.κs)
     (config.type == :Segment) && return KuhnSegment(label; kwargs...)
     (config.type == :Small) && return SmallMolecule(label; kwargs...)
     error("Unknown specie type!")

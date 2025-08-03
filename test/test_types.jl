@@ -17,6 +17,11 @@ end
     segment = KuhnSegment(:A)
     @test segment.b == 1.0
     @test segment.M == 1.0
+    @test segment.κs == Float64[]
+    segment = KuhnSegment(:A, b=2.0, M=3, κs=[1, 0.2])
+    @test segment.b == 2.0
+    @test segment.M == 3.0
+    @test segment.κs == [1.0, 0.2]
 end
 
 @testset "types.jl: Block" begin

@@ -43,13 +43,23 @@ struct KuhnSegment{T} <: AbstractSpecie
     label::Symbol
     b::T # length
     M::T # molecular weight in g/mol
+    κs::Vector{T}  # affinities to surfaces, can be empty. See Fredrison's book (2006) 193-194 for details
 
-    KuhnSegment(label::Symbol, b::T, M::T) where T = new{T}(label, b, M)
+    KuhnSegment(label::Symbol, b::T, M::T, κs::Vector{T}) where T = new{T}(label, b, M, κs)
 end
 
-KuhnSegment(label; b=1.0, M=1.0) = KuhnSegment(Symbol(label), promote(b, M)...)
+function KuhnSegment(label; b=1.0, M=1.0, κs=Float64[])
+    if isempty(κs)
+        b, M = promote(b, M)
+        T = typeof(b)
+        return KuhnSegment(Symbol(label), b, M, T[])
+    else
+        T = promote_type(typeof(b), typeof(M), eltype(κs))
+        return KuhnSegment(Symbol(label), T(b), T(M), Vector{T}(κs))
+    end
+end
 
-Base.show(io::IO, s::KuhnSegment) = print(io, "KuhnSegment $(s.label) with b=$(s.b)")
+Base.show(io::IO, s::KuhnSegment) = print(io, "KuhnSegment $(s.label) with b=$(s.b), M=$(s.M), κs=$(s.κs)")
 
 abstract type BlockEnd end
 

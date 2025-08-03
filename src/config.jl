@@ -4,6 +4,7 @@
     type::Symbol=:Segment
     b::Float64=1.0
     M::Union{Float64, Nothing}=nothing
+    κs::Union{Vector{Float64}, Nothing}=nothing
 end
 
 @option struct BlockConfig
