@@ -3,14 +3,14 @@
 branchpoints(n, prefix="EB") = [BranchPoint(Symbol(prefix*string(i))) for i in 1:n]
 freeends(n, prefix="A") = [FreeEnd(Symbol(prefix*string(i))) for i in 1:n]
 
-function homopolymer_chain(; label=:A, segment=KuhnSegment(label))
+function homopolymer_chain(; label=:hA, segment=KuhnSegment(:A))
     labelE1 = Symbol(label, :1)
     labelE2 = Symbol(label, :2)
     A = PolymerBlock(label, segment, 1.0, FreeEnd(labelE1), FreeEnd(labelE2))
     return BlockCopolymer(label, [A])
 end
 
-function diblock_chain(; labelA=:A, labelB=:B, segmentA=KuhnSegment(labelA), segmentB=KuhnSegment(labelB), fA=0.5)
+function diblock_chain(; labelA=:A, labelB=:B, segmentA=KuhnSegment(:A), segmentB=KuhnSegment(:B), fA=0.5)
     labelAB = Symbol(labelA, labelB)
     fB = 1.0 - fA
     eAB = BranchPoint(labelAB)
@@ -37,10 +37,21 @@ solvent(; label=:S) = SmallMolecule(label)
 
 ## Convenient functions for creating polymer systems.
 
-"Default AB diblock copolymer system: two species are A and B, lengths of both segmeents are 1.0. However, χN and fA can be changed by Keyword argument. Default values are: χN=20.0 and fA=0.5."
-function AB_system(; χN=20.0, fA=0.5)
-    polymer = Component(diblock_chain(; fA=fA))
-    return PolymerSystem([polymer], Dict((:A, :B)=>χN))
+"""
+    AB_system(; χN=20.0, fA=0.5, κsA=Float64[])
+
+Default AB diblock copolymer system: two species are A and B, lengths of both segments are identical. However, χN and fA can be changed by Keyword argument. Default values are: χN=20.0 and fA=0.5.
+"""
+function AB_system(; χN=20.0, fA=0.5, κsA=Float64[], conf=BulkConfinement())
+    if !isempty(κsA) && conf isa BulkConfinement
+        error("κsA is not expected for BulkConfinement! Please change to other confinement type.")
+    end
+    fB = 1.0 - fA
+    κsB = isempty(κsA) ? Float64[] : (-fA / fB) .* κsA
+    segmentA = KuhnSegment(:A, κs=κsA)
+    segmentB = KuhnSegment(:B, κs=κsB)
+    polymer = Component(diblock_chain(; segmentA, segmentB, fA))
+    return PolymerSystem([polymer], Dict((:A, :B)=>χN); conf)
 end
 
 function ABC_system(; χABN=40.0, χACN=40.0, χBCN=40.0, fA=0.3, fB=0.4)
@@ -56,8 +67,8 @@ end
 
 "A/B homopolymers binary blend."
 function A_B_system(; χN=20.0, ϕA=0.5, αA=1.0, αB=1.0)
-    polymerA = Component(homopolymer_chain(label=:A), αA, ϕA)
-    polymerB = Component(homopolymer_chain(label=:B), αB, 1-ϕA)
+    polymerA = Component(homopolymer_chain(label=:hA, segment=KuhnSegment(:A)), αA, ϕA)
+    polymerB = Component(homopolymer_chain(label=:hB, segment=KuhnSegment(:B)), αB, 1-ϕA)
     return PolymerSystem([polymerA, polymerB], Dict((:A, :B)=>χN))
 end
 

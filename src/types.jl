@@ -242,8 +242,8 @@ function Base.print(io::IO, s::PolymerSystem)
         print(io, "Component $(c.molecule.label) with ϕ=$(c.ϕ) and α=$(c.α) contains ")
         println(io, c.molecule)
     end
-    println(io)
     print(io, "with ", s.χNmatrix)
+    print(io, "and confined by ", s.confinement)
 end
 
 """
