@@ -8,6 +8,8 @@ using Configurations
 using YAML
 using Setfield
 
+import Base: ==, unique
+
 include("utils.jl")
 export
     unicodesymbol2string,
@@ -94,7 +96,8 @@ export
     PolymerBlock
 export
     AbstractSpecie,
-    KuhnSegment
+    KuhnSegment,
+    SpecieUnion
 export
     AbstractMolecule,
     SmallMolecule,

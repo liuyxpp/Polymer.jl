@@ -115,7 +115,32 @@ end
 end
 
 @testset "properties.jl: specie, species" begin
+    sol = solvent()
+    @test length(specie_objects(sol)) == 1
+    @test species(sol) == [:S]
+
+    chain = homopolymer_chain()
+    @test length(specie_objects(chain)) == 1
+    @test species(chain) == [:A]
+
+    chain = diblock_chain()
+    @test length(specie_objects(chain)) == 2
+    @test species(chain) == [:A, :B]
+
+    chain = linearABC()
+    @test length(specie_objects(chain)) == 3
+    @test species(chain) == [:A, :B, :C]
+
+    model = AB_system()
+    @test length(specie_objects(model)) == 2
+    @test species(model) == [:A, :B]
+
+    model = AB_A_B_system()
+    @test length(specie_objects(model)) == 2
+    @test species(model) == [:A, :B]
+
     model = AB_S_system()
+    @test length(specie_objects(model)) == 3
     @test species(model) == [:A, :B, :S]
     cs = components(model)
     c1 = first(cs)
@@ -132,6 +157,10 @@ end
     @test specie(bB) == :B
     @test specie(S) == :S
     @test isempty(blocks(S))
+
+    model = AB_A_system()
+    @test length(specie_objects(model)) == 2
+    @test species(model) == [:A, :B]
 end
 
 nothing

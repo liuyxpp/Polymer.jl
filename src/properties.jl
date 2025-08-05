@@ -1,14 +1,44 @@
 specie_object(m::SmallMolecule) = m
 specie_object(b::PolymerBlock) = b.segment
 
+"""
+    unique(sps::AbstractVector{T}) where T <: AbstractSpecie
+
+Return a vector of unique species from the input vector `sps` as determined by `specie`.
+
+Note that the current implementation only consider sp.label, so if two species have the same label, they will be considered the same, even if they blong to different types, such as KuhnSegment and SmallMolecule.
+
+Extremely Important Notice: ensure that the labels of species are unique in the first place!!!
+"""
+function unique(sps::AbstractVector{T}) where T <: SpecieUnion
+    isempty(sps) && return sps
+
+    unique_labels = map(specie, sps) |> unique
+    unique_sps = Vector{T}()
+    for label in unique_labels
+        for sp in sps
+            if specie(sp) == label
+                push!(unique_sps, sp)
+                break
+            end
+        end
+    end
+
+    new_sps = [sp for sp in unique_sps]
+
+    return new_sps isa Vector{Any} ? unique_sps : new_sps
+end
+
 specie_objects(bcp::BlockCopolymer) = specie_object.(bcp.blocks) |> unique
 specie_objects(m::SmallMolecule) = [m]
 specie_objects(c::Component) = specie_objects(c.molecule)
+
 function specie_objects(s::PolymerSystem)
-    species = Any[]
+    species = SpecieUnion[]
     for c in s.components
         append!(species, specie_objects(c))
     end
+
     return unique(species)
 end
 

@@ -59,6 +59,8 @@ function KuhnSegment(label; b=1.0, M=1.0, κs=Float64[])
     end
 end
 
+==(sp1::KuhnSegment, sp2::KuhnSegment) = sp1.label == sp2.label
+
 Base.show(io::IO, s::KuhnSegment) = print(io, "KuhnSegment $(s.label) with b=$(s.b), M=$(s.M), κs=$(s.κs)")
 
 abstract type BlockEnd end
@@ -125,7 +127,11 @@ struct SmallMolecule{T} <: AbstractMolecule
     SmallMolecule(label::Symbol, b::T, M::T) where T = new{T}(label, b, M)
 end
 
+const SpecieUnion = Union{KuhnSegment, SmallMolecule}
+
 SmallMolecule(label; b=1.0, M=1.0) = SmallMolecule(Symbol(label), promote(b, M)...)
+
+==(sp1::SmallMolecule, sp2::SmallMolecule) = sp1.label == sp2.label
 
 Base.show(io::IO, smol::SmallMolecule) = print(io, "SmallMolecule $(smol.label) with b=$(smol.b)")
 
