@@ -43,7 +43,7 @@ struct KuhnSegment{T} <: AbstractSpecie
     label::Symbol
     b::T # length
     M::T # molecular weight in g/mol
-    κs::Vector{T}  # affinities to surfaces, can be empty. See Fredrison's book (2006) 193-194 for details
+    κs::Vector{T}  # affinities to surfaces, can be empty. See Fredrison's book (2006) 193-194 for details. 0.0 for Neumman (NBC), Inf for Dirichlet (DBC).
 
     KuhnSegment(label::Symbol, b::T, M::T, κs::Vector{T}) where T = new{T}(label, b, M, κs)
 end

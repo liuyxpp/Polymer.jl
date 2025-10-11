@@ -6,3 +6,7 @@
 /test/jl_*
 Manifest.toml
 .VSCodeCounter/
+.vscode/
+
+#Ignore vscode AI rules
+.github/instructions/codacy.instructions.md

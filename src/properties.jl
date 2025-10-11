@@ -203,7 +203,8 @@ function block_label(id::Integer, bcp::BlockCopolymer)
     return block_labels(bcp)[id]
 end
 
-block_label(::Integer, ::SmallMolecule) = nothing
+block_label(sm::SmallMolecule) = label(sm)
+block_label(::Integer, sm::SmallMolecule) = block_label(sm)
 label(id::Integer, m::AbstractMolecule) = block_label(id, m)
 label(id::Integer, c::Component) = label(id, molecule(c))
 
